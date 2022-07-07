@@ -24,6 +24,19 @@ class CableGenerator {
       copper: new THREE.MeshLambertMaterial({color: 0xff8000, wireframe: false}),
       insulation: new THREE.MeshLambertMaterial({color: 0x006699, wireframe: false})
     };
+
+    this.materials.copper = new THREE.MeshStandardMaterial({
+      metalness: 0.7,   // between 0 and 1
+      roughness: 0.5, // between 0 and 1
+      color: 0xff8000
+    });
+
+    this.materials.insulation = new THREE.MeshPhongMaterial({
+      color: 0x006699,
+      specular: 0x0088bb,
+      shininess: 4
+    });
+
   }
 
   twistedCircleWire(radius, count, material) {
@@ -51,7 +64,8 @@ class CableGenerator {
   ribbon(material) {
     var radius = this.currentRadius;
     var width = this.intersectionStepLength * 2;
-    var ribbonGenerator = new RibbonGenerator(radius, width, material);
+    var underlyingObject = this.objects[this.objects.length - 1];
+    var ribbonGenerator = new RibbonGenerator(radius, width, material, underlyingObject);
     var ribon = ribbonGenerator.generate();
     ribon.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += width;

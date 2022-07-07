@@ -6,10 +6,11 @@ class RibbonGenerator {
   ribbonWidth = 7;
   ribbonSteps = 2.7;
 
-  constructor(innerRadius, width, material) {
+  constructor(innerRadius, width, material, underlyingObject) {
     this.innerRadius = innerRadius;
     this.width = width;
     this.material = material;
+    this.underlyingObject = underlyingObject;
     this.totalRadius = this.innerRadius + this.ribbonThickness;
   }
 
@@ -56,7 +57,15 @@ class RibbonGenerator {
     var mesh = new THREE.Mesh(rbnGeom, this.material);
     mesh.rotateZ(-Math.PI * 0.5);
     mesh.rotateY(-Math.PI * 1.1);
-    return mesh;
+
+    // Copy underlying object to fill space under he tibon
+    var group = new THREE.Group();
+    var clonedObject = this.underlyingObject.clone();
+    clonedObject.position.set(0, 0, 0);
+    group.add(clonedObject);
+    group.add(mesh);
+
+    return group;
   }
 
 }

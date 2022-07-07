@@ -18,7 +18,7 @@ const launch = async () => {
     devtools: false,
   });
 
-
+/*
 var params = [
   {
     "name": "cables-count",
@@ -111,6 +111,12 @@ var testCases = generateTestCases(params);
   }
 
   console.log(totalTime / testCases.length);
+*/
+
+    const page = await browser.newPage();
+    await page.goto(URL, { waitUntil: "networkidle0", timeout: 0 });
+    await page.screenshot({path: '_test.png'});
+    await page.close();  
 
   const pages = await browser.pages();  
   await browser.close();

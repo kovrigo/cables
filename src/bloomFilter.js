@@ -4,13 +4,13 @@ import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
 import { ShapeGenerator } from "./ShapeGenerator";
 var shapeGenerator = new ShapeGenerator;
 
 import { CableGenerator } from "./CableGenerator";
-var cableGenerator = new CableGenerator;
 
-const PATH_TO_TEXTURE = "src/assets/particle1.png";
 const SIZE = 500;
 const CANVAS_STYLE = `width: ${SIZE}px; height: ${SIZE}px; position: absolute; top: 10; left: 10; border: 1px solid black; z-index: 2`;
 
@@ -19,9 +19,30 @@ const init = () => {
   var camera = new THREE.PerspectiveCamera(45, SIZE/SIZE, 1, 1000);
   // Light
   scene.add(new THREE.AmbientLight(0x222222));
-  var light = new THREE.PointLight(0xffffff);
-  light.position.set(-30, 10, 40);
-  scene.add(light);
+
+  
+  var light3 = new THREE.PointLight(0xffffff, 0.3);
+  light3.position.set(-10, 0, 0);
+  scene.add(light3);
+
+
+const color = 0xFFFFFF;
+const intensity = 1;
+const light = new THREE.DirectionalLight(color, intensity);
+light.position.set(10, 10, 10);
+light.target.position.set(0, 0, 0);
+scene.add(light);
+scene.add(light.target);  
+
+
+const color2 = 0xFFFFFF;
+const intensity2 = 0.6;
+const light2 = new THREE.DirectionalLight(color2, intensity2);
+light2.position.set(0, -10, 10);
+light2.target.position.set(0, 0, 0);
+//scene.add(light2);
+scene.add(light2.target);  
+
 
   let renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -32,6 +53,7 @@ const init = () => {
   renderer.setSize(SIZE, SIZE);
   renderer.domElement.style = CANVAS_STYLE;
   document.body.appendChild(renderer.domElement);
+
   return { scene, camera, renderer };
 };
 
@@ -76,66 +98,19 @@ var hasOverallShield = getUrlParamBool("has-overall-shield", true);
 // Цвет самого кабеля
 var coverColor = 0x003333;
   
-//////////////////////////////////////////////////////////////
+var cableGenerator = new CableGenerator();
 
-/*
-
-var rbnWidth = 7;
-var rbnSteps = 3;
-var rbnThickness = cableOverallShieldWidth / rbnSteps;
-var rbnStepLength = intersectionStepLength * scaleFactor / rbnSteps;
-var rbnSegsPerStep = 50;
-var rbnRadius = shieldRadius;
-
-var rbnGeom = new THREE.BoxGeometry(rbnSteps * Math.PI * 2, rbnWidth, rbnThickness, rbnSteps * rbnSegsPerStep, 1, 1);
-rbnGeom.computeBoundingBox();
-var size = new THREE.Vector3();
-rbnGeom.boundingBox.getSize(size);
-rbnGeom.translate(size.x * 0.5, size.y * 0.5, size.z * 0.5);
-
-// bend it!
-
-const attribute = rbnGeom.attributes.position;
-for (var i = 0; i < attribute.array.length; i++) {
-  var v = new THREE.Vector3(attribute.array[i*3], attribute.array[i*3 + 1], attribute.array[i*3 + 2]);
-
-  let angle = -v.x;
-  let radius = rbnRadius + v.z;
-  let shift = (v.x / (Math.PI * 2)) * rbnStepLength + v.y;
-  let radiusShift = v.x / (Math.PI * 2) * rbnThickness;
-  radius += radiusShift;
-  
-  v.x = Math.cos(angle) * radius;
-  v.y = shift;
-  v.z = Math.sin(angle) * radius;
-
-  attribute.array[i*3] = v.x;
-  attribute.array[i*3 + 1] = v.y;
-  attribute.array[i*3 + 2] = v.z; 
-
-}
-
-attribute.needsUpdate = true;
-
-rbnGeom.computeFaceNormals();
-rbnGeom.computeVertexNormals();
-
-var mesh = new THREE.Mesh(rbnGeom, wireMaterial);
-mesh.rotateZ(-Math.PI * 0.5);
-mesh.position.set(intersectionStepLength * scaleFactor * multiplier, 0, 0);
-
-*/
-
-  var cable = cableGenerator.twistedCircleWire(0.5, 8, cableGenerator.materials.copper)
+  var cable = cableGenerator.twistedCircleWire(0.2, 16, cableGenerator.materials.copper)
     .circleWireCover(0.3, cableGenerator.materials.insulation)
     .clone(3)
-    .circleWireCover(0.5, cableGenerator.materials.insulation, true)
+    .circleWireCover(0.5, cableGenerator.materials.insulation)
     .ribbon(cableGenerator.materials.copper)
     .circleWireCover(0.4, cableGenerator.materials.insulation, true)
     .compileScene();
 
   scene.add(cable);
 
+  //controls.update();
   renderer.render(scene, camera);
 };
 
