@@ -19,16 +19,13 @@ class CircleWireCoverGenerator {
   }
   
   generateMesh() {
-    var circleShape = this.shapeGenerator.circle(this.radius);
-    var spline = this.generateSpline();
-    var extrudeSettings = {
-      steps: 1,
-      bevelEnabled: false,
-      extrudePath: this.generateSpline()
-    };
-    var geometry = new THREE.ExtrudeGeometry(circleShape, extrudeSettings);
+    var group = new THREE.Group();
+    const geometry = new THREE.CylinderGeometry( this.radius, this.radius, this.width, 32 );
     var mesh = new THREE.Mesh(geometry, this.material);
-    return mesh;
+    mesh.rotateZ(-Math.PI * 0.5);
+    mesh.position.x = this.width / 2;
+    group.add(mesh);
+    return group;
   }
 
   generate() {

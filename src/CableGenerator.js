@@ -2,10 +2,11 @@ import * as THREE from "three";
 import { TwistedCircleWireGenerator } from "./TwistedCircleWireGenerator";
 import { CircleWireCoverGenerator } from "./CircleWireCoverGenerator";
 import { CloneGenerator } from "./CloneGenerator";
+import { RibbonGenerator } from "./RibbonGenerator";
 
 class CableGenerator {
 
-  width = 20;
+  width = 40;
   intersectionStepLength = 5;
   cloneSpacerWidthMultiplier = 1.3;
 
@@ -37,13 +38,25 @@ class CableGenerator {
 
   circleWireCover(coverWidth, material, extendToFullWidth = false) {
     var radius = this.currentRadius + coverWidth;
-    var width = extendToFullWidth ? this.width - this.currentIntersectionStep : this.currentIntersectionStep;
+    var width = extendToFullWidth ? this.width - this.currentIntersectionStep : this.intersectionStepLength;
     var circleWireCoverGenerator = new CircleWireCoverGenerator(radius, width, material);
     var wire = circleWireCoverGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
     this.currentRadius += coverWidth;
     this.objects.push(wire);
+    return this;
+  }
+
+  ribbon(material) {
+    var radius = this.currentRadius;
+    var width = this.intersectionStepLength * 2;
+    var ribbonGenerator = new RibbonGenerator(radius, width, material);
+    var ribon = ribbonGenerator.generate();
+    ribon.position.set(this.currentIntersectionStep, 0, 0);
+    this.currentIntersectionStep += width;
+    this.currentRadius = ribbonGenerator.totalRadius;
+    this.objects.push(ribon);
     return this;
   }
 
