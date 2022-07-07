@@ -3,6 +3,7 @@ import { TwistedCircleWireGenerator } from "./TwistedCircleWireGenerator";
 import { CircleWireCoverGenerator } from "./CircleWireCoverGenerator";
 import { CloneGenerator } from "./CloneGenerator";
 import { RibbonGenerator } from "./RibbonGenerator";
+import { Materials } from "./Materials";
 
 class CableGenerator {
 
@@ -16,31 +17,13 @@ class CableGenerator {
   objects = [];
 
   constructor() {
-    this.initMaterials();
+    this.materials = new Materials();
   }
 
-  initMaterials() {
-    this.materials = {
-      copper: new THREE.MeshLambertMaterial({color: 0xff8000, wireframe: false}),
-      insulation: new THREE.MeshLambertMaterial({color: 0x006699, wireframe: false})
-    };
-
-    this.materials.copper = new THREE.MeshStandardMaterial({
-      metalness: 0.7,   // between 0 and 1
-      roughness: 0.5, // between 0 and 1
-      color: 0xff8000
-    });
-
-    this.materials.insulation = new THREE.MeshPhongMaterial({
-      color: 0x006699,
-      specular: 0x0088bb,
-      shininess: 4
-    });
-
-  }
-
-  twistedCircleWire(radius, count, material) {
-    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material);
+  twistedCircleWire(radius, count, material, faceMaterial = null) {
+    material = this.materials.getMaterialByCode(material);
+    faceMaterial = faceMaterial ? this.materials.getMaterialByCode(faceMaterial) : material;
+    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material, faceMaterial);
     var wire = twistedCircleWireGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
@@ -49,7 +32,8 @@ class CableGenerator {
     return this;
   }
 
-  circleWireCover(coverWidth, material, extendToFullWidth = false) {
+  circleWireCover(coverWidth, material, color = null, extendToFullWidth = false) {
+    material = this.materials.getMaterialByCode(material, color);
     var radius = this.currentRadius + coverWidth;
     var width = extendToFullWidth ? this.width - this.currentIntersectionStep : this.intersectionStepLength;
     var circleWireCoverGenerator = new CircleWireCoverGenerator(radius, width, material);
@@ -61,7 +45,8 @@ class CableGenerator {
     return this;
   }
 
-  ribbon(material) {
+  ribbon(material, color = null) {
+    material = this.materials.getMaterialByCode(material, color);
     var radius = this.currentRadius;
     var width = this.intersectionStepLength * 2;
     var underlyingObject = this.objects[this.objects.length - 1];

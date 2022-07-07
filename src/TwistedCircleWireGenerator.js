@@ -1,14 +1,16 @@
 import * as THREE from "three";
 import { EquiCirclePackings } from "./EquiCirclePackings";
 import { ShapeGenerator } from "./ShapeGenerator";
+import { SceneUtils } from 'three/examples/jsm/utils/SceneUtils';
 
 class TwistedCircleWireGenerator {
 
-  constructor(radius, count, width, material) {
+  constructor(radius, count, width, material, faceMaterial = null) {
     this.radius = radius;
     this.count = count;
     this.width = width;
     this.material = material;
+    this.faceMaterial = faceMaterial ? faceMaterial : material;
     this.shapeGenerator = new ShapeGenerator;
     this.equiCirclePackings = new EquiCirclePackings(radius, count);
     this.totalRadius = this.equiCirclePackings.getTotalRadius();
@@ -31,10 +33,15 @@ class TwistedCircleWireGenerator {
     var extrudeSettings = {
       steps: 200,
       bevelEnabled: false,
-      extrudePath: wireSpline
+      extrudePath: wireSpline,
+      material: 1, 
+      extrudeMaterial: 2
     };
     var geometry = new THREE.ExtrudeGeometry(circleShape, extrudeSettings);
-    var mesh = new THREE.Mesh(geometry, this.material);
+
+    var mesh = SceneUtils.createMultiMaterialObject( geometry, [ this.material, this.faceMaterial ] );
+
+//    var mesh = new THREE.Mesh(geometry, this.material);
     return mesh;
   }
 
