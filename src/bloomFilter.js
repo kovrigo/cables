@@ -4,32 +4,19 @@ import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 
-import { wiresPositions, wiresRadiuses } from "./packing";
+import { ShapeGenerator } from "./ShapeGenerator";
+var shapeGenerator = new ShapeGenerator;
+
+import { CableGenerator } from "./CableGenerator";
+var cableGenerator = new CableGenerator;
 
 const PATH_TO_TEXTURE = "src/assets/particle1.png";
 const SIZE = 500;
 const CANVAS_STYLE = `width: ${SIZE}px; height: ${SIZE}px; position: absolute; top: 10; left: 10; border: 1px solid black; z-index: 2`;
 
-
-
-var cableMeta = {
-  layers: [
-    {
-      type: "equal-packing",
-      count: 3,
-      item: {
-        type: ""
-      }
-    }
-  ]
-};
-
-
-
 const init = () => {
   let scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(45, SIZE/SIZE, 1, 1000);
-
   // Light
   scene.add(new THREE.AmbientLight(0x222222));
   var light = new THREE.PointLight(0xffffff);
@@ -115,54 +102,7 @@ var coverColor = 0x003333;
 
 //////////////////////////////////////////////////////////////  
 
-  function getCircleShape(radius) {
-    var circleRadius = radius;
-    var circleShape = new THREE.Shape();
-    circleShape.moveTo( 0, circleRadius );
-    circleShape.quadraticCurveTo( circleRadius, circleRadius, circleRadius, 0 );
-    circleShape.quadraticCurveTo( circleRadius, - circleRadius, 0, - circleRadius );
-    circleShape.quadraticCurveTo( - circleRadius, - circleRadius, - circleRadius, 0 );
-    circleShape.quadraticCurveTo( - circleRadius, circleRadius, 0, circleRadius );
-    return circleShape;
-  }
-  
-  function generateWireSpline(wireIndex) {
-    var wirePoints = [];
-    var startWirePosition = wiresPositions[wiresCount - 1][wireIndex];
-    var wireCenterVector = new THREE.Vector2(startWirePosition[0], startWirePosition[1]);
-    for (var i = 0; i < productWidth; i++) {
-      wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), THREE.Math.degToRad( 20 ));
-      wirePoints.push(new THREE.Vector3(i, wireCenterVector.x, wireCenterVector.y));
-    }
-    var wireSpline = new THREE.CatmullRomCurve3(wirePoints);
-    return wireSpline;
-  }
-  
-  function generateWireMesh(wireIndex) {
-    var circleShape = getCircleShape(wiresRadiuses[wiresCount - 1]);
-    var wireSpline = generateWireSpline(wireIndex);
-    var extrudeSettings = {
-      steps: 200,
-      bevelEnabled: false,
-      extrudePath: wireSpline
-    };
-    var geometry = new THREE.ExtrudeGeometry(circleShape, extrudeSettings);
-    var mesh = new THREE.Mesh(geometry, wireMaterial);
-    return mesh;
-  }
-
-  function generateWireCable() {
-    var mesh;
-    var wireGroup = new THREE.Group();
-    for (var i = 0; i < wiresCount; i++) {
-      mesh = generateWireMesh(i);
-      wireGroup.add(mesh);  
-    }
-    var scaleFactor = 1 / wiresRadiuses[wiresCount - 1] * wireRadius;
-    wireGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
-    return wireGroup;
-  }
-  
+    
   function getWireCableRadius() {
     return 1 / wiresRadiuses[wiresCount - 1] * wireRadius;
   }
@@ -194,8 +134,8 @@ var coverColor = 0x003333;
     var scaleFactor = 1 / wiresRadiuses[wiresCount - 1] * wireRadius;
     cablePoints.push(new THREE.Vector3(intersectionStepLength * scaleFactor, 0, 0));
     cablePoints.push(new THREE.Vector3(productWidth * scaleFactor, 0, 0));
-    var cableSpline = new THREE.CatmullRomCurve3(cablePoints);    
-    var circleShape = getCircleShape(getWireCableRadius() + cableInsulationWidth);
+    var cableSpline = new THREE.CatmullRomCurve3(cablePoints);
+    var circleShape = shapeGenerator.circle(getWireCableRadius() + cableInsulationWidth);
     var extrudeSettings = {
       steps: 1,
       bevelEnabled: false,
@@ -214,7 +154,7 @@ var coverColor = 0x003333;
     cablePoints.push(new THREE.Vector3(modifiedIntersectionStepLength * scaleFactor, 0, 0));
     cablePoints.push(new THREE.Vector3(productWidth * scaleFactor, 0, 0));
     var cableSpline = new THREE.CatmullRomCurve3(cablePoints);    
-    var circleShape = getCircleShape(getWireCableRadius() + modifiedShieldWidth);
+    var circleShape = shapeGenerator.circle(getWireCableRadius() + modifiedShieldWidth);
     var extrudeSettings = {
       steps: 1,
       bevelEnabled: false,
@@ -345,7 +285,7 @@ mesh.position.set(intersectionStepLength * scaleFactor * multiplier, 0, 0);
     cablePoints.push(new THREE.Vector3(intersectionStepLength * scaleFactor * multiplier, 0, 0));
     cablePoints.push(new THREE.Vector3(productWidth * scaleFactor, 0, 0));
     var cableSpline = new THREE.CatmullRomCurve3(cablePoints);    
-    var circleShape = getCircleShape(getCablesRadiusWithOverallShield() + cableOverallShieldWidth);
+    var circleShape = shapeGenerator.circle(getCablesRadiusWithOverallShield() + cableOverallShieldWidth);
     var extrudeSettings = {
       steps: 1,
       bevelEnabled: false,
@@ -356,6 +296,17 @@ mesh.position.set(intersectionStepLength * scaleFactor * multiplier, 0, 0);
     return mesh;      
   }
   
+
+  var x = cableGenerator.twistedCircleWire(0.5, 8, cableGenerator.materials.copper)
+    .circleWireCover(0.3, cableGenerator.materials.insulation)
+    .clone(3)
+    .circleWireCover(0.5, cableGenerator.materials.insulation, true)
+    .compileScene();
+
+  scene.add(x);
+  
+
+  /*
   var cables = generateCables();
   if (hasOverallShield) {
     var overallCablesShield = generateOverallCablesShield();
@@ -367,12 +318,7 @@ mesh.position.set(intersectionStepLength * scaleFactor * multiplier, 0, 0);
   //cables.scale.set(10, 10, 10);
   
   scene.add(cables);
-
-
-  var geometry = new THREE.BoxGeometry(10, 10, 10);
-  var material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: false});
-  var cube = new THREE.Mesh(geometry, material);
-  //scene.add(cube);
+*/
 
 
   renderer.render(scene, camera);
