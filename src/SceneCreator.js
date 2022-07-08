@@ -8,7 +8,7 @@ class SceneCreator {
   }
 
   make() {
-    let scene = new THREE.Scene();
+    var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(45, this.size / this.size, 1, 1000);
 
     scene.add(new THREE.AmbientLight(0x222222));
@@ -32,12 +32,13 @@ class SceneCreator {
     renderer.clearColor = new THREE.Color(0xffffff);
     renderer.setSize(this.size, this.size);
     renderer.domElement.style = this.canvasStyle;
-    document.body.appendChild(renderer.domElement);
+
+    var canvas = renderer.domElement;
 
     camera.position.set(-30, 10, 40);
     camera.lookAt(new THREE.Vector3(5, 0, 0));
 
-    return { scene, camera, renderer };
+    return { scene, camera, renderer, canvas };
   }
 
 }

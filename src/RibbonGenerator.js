@@ -2,16 +2,16 @@ import * as THREE from "three";
 
 class RibbonGenerator {
 
-  ribbonThickness = 0.6;
-  ribbonWidth = 7;
-  ribbonSteps = 2.7;
+  ribbonSteps = 3;
 
-  constructor(innerRadius, width, material, underlyingObject) {
+  constructor(innerRadius, width, thickness, material, underlyingObject) {
     this.innerRadius = innerRadius;
     this.width = width;
     this.material = material;
     this.underlyingObject = underlyingObject;
+    this.ribbonThickness = thickness * this.ribbonSteps;
     this.totalRadius = this.innerRadius + this.ribbonThickness;
+    this.ribbonWidth = this.width / 2;
   }
 
   generate() {
@@ -35,7 +35,6 @@ class RibbonGenerator {
       let angle = -v.x;
       let radius = rbnRadius + v.z;
       let shift = (v.x / (Math.PI * 2)) * rbnStepLength + v.y;
-      //let radiusShift = v.x / (Math.PI * 2) * rbnThickness;
       let radiusShift = Math.floor(v.x / (Math.PI * 2)) * rbnThickness;
       radius += radiusShift;
       
@@ -56,7 +55,7 @@ class RibbonGenerator {
 
     var mesh = new THREE.Mesh(rbnGeom, this.material);
     mesh.rotateZ(-Math.PI * 0.5);
-    mesh.rotateY(-Math.PI * 1.1);
+    mesh.rotateY(-Math.PI * 1.3);
 
     // Copy underlying object to fill space under he tibon
     var group = new THREE.Group();
