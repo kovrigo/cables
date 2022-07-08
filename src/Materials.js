@@ -25,7 +25,6 @@ class Materials {
       default:
         return new THREE.MeshPhongMaterial({
               color: color != null ? color : 0x222222,
-              //specular: 0x0088bb,
               shininess: 4
             });
         break;

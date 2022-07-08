@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "fs": "^0.0.1-security",
     "postprocessing": "^6.22.3",
     "puppeteer": "^15.2.0",
     "three": "^0.131.0",

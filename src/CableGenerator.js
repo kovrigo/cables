@@ -20,10 +20,9 @@ class CableGenerator {
     this.materials = new Materials();
   }
 
-  twistedCircleWire(radius, count, material, faceMaterial = null) {
-    material = this.materials.getMaterialByCode(material);
-    faceMaterial = faceMaterial ? this.materials.getMaterialByCode(faceMaterial) : material;
-    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material, faceMaterial);
+  twistedCircleWire(radius, count, materialName) {
+    var material = this.materials.getMaterialByCode(materialName);
+    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material);
     var wire = twistedCircleWireGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
