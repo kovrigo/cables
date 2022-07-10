@@ -4,6 +4,7 @@ import { CircleWireCoverGenerator } from "./CircleWireCoverGenerator";
 import { CloneGenerator } from "./CloneGenerator";
 import { RibbonGenerator } from "./RibbonGenerator";
 import { TwistedCircleWireShieldGenerator } from "./TwistedCircleWireShieldGenerator";
+import { NetWireShieldGenerator } from "./NetWireShieldGenerator";
 import { Materials } from "./Materials";
 
 class CableGenerator {
@@ -70,6 +71,17 @@ class CableGenerator {
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
     this.currentRadius = twistedCircleWireShieldGenerator.totalRadius;
+    this.objects.push(wire);
+    return this;
+  }
+
+  netWireShield(wireRadius, wiresCountPerRibbon, materialName) {
+    var material = this.materials.getMaterialByCode(materialName);
+    var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, material);
+    var wire = netWireShieldGenerator.generate();
+    wire.position.set(this.currentIntersectionStep, 0, 0);
+    this.currentIntersectionStep += this.intersectionStepLength;
+    this.currentRadius = netWireShieldGenerator.totalRadius;
     this.objects.push(wire);
     return this;
   }
