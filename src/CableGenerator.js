@@ -23,7 +23,7 @@ class CableGenerator {
   }
 
   cableLength() {
-    return this.currentIntersectionStep + this.intersectionStepLength;
+    return this.currentIntersectionStep;
   }
 
   twistedCircleWire(radius, count, materialName) {

@@ -18,7 +18,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 1
+        newStep: 1.3
       }
     },
     {
@@ -32,7 +32,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 4
+        newStep: 3
       }
     },
     {
@@ -51,7 +51,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 2
+        newStep: 2.5
       }
     },
     {
@@ -59,7 +59,7 @@ var cableDescription = {
       options: {
         radius: 0.4,
         material: "plastic",
-        color: "#777777"
+        color: "#00695c"
       }
     },
     {

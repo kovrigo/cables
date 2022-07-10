@@ -4,7 +4,8 @@ class SceneCreator {
 
   constructor(size) {
     this.size = size;
-    this.canvasStyle = `width: ${this.size}px; height: ${this.size}px; position: absolute; top: 10; left: 10; border: 1px solid black; z-index: 2`;
+    //this.canvasStyle = `width: ${this.size}px; height: ${this.size}px; position: absolute; top: 10; left: 10; border: 1px solid black; z-index: 2`;
+    this.canvasStyle = `width: ${this.size}px; height: ${this.size}px; position: absolute; z-index: 2`;
   }
 
   make() {
@@ -41,7 +42,6 @@ class SceneCreator {
 
     camera.position.set(-30, 30, 40);
     camera.lookAt(new THREE.Vector3(5, 0, 0));
-
     return { scene, camera, renderer, canvas };
   }
 

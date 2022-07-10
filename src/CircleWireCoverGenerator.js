@@ -46,9 +46,6 @@ class CircleWireCoverGenerator {
   }
 
   getTextCanvas(canvasWidth, canvasHeight, canvasBgColor, text, textSize, textColor) { 
-
-console.log(canvasBgColor);
-
     var canvas = document.createElement('canvas');
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
