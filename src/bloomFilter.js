@@ -82,7 +82,7 @@ var cableDescription = {
     {
       step: "ribbon",
       options: {
-        thickness: 0.15,
+        thickness: 0.1,
         material: "steel"
       }
     },
@@ -97,7 +97,7 @@ var cableDescription = {
       options: {
         radius: 0.4,
         material: "plastic",
-        color: "#222222",
+        color: "#333333",
         text: "allcables.pro",
         textSize: 0.7,
         textColor: "#FFFFFF"

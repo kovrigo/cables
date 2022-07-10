@@ -25,7 +25,7 @@ class CircleWireCoverGenerator {
           map: new THREE.CanvasTexture(this.getTextCanvas(
             texWidth, 
             texHeight, 
-            this.material.color,
+            "#" + this.material.color.getHexString(),
             this.text, 
             this.textSize * highResolutionMultiplier,
             this.textColor
@@ -46,6 +46,9 @@ class CircleWireCoverGenerator {
   }
 
   getTextCanvas(canvasWidth, canvasHeight, canvasBgColor, text, textSize, textColor) { 
+
+console.log(canvasBgColor);
+
     var canvas = document.createElement('canvas');
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
