@@ -38,6 +38,18 @@ class NetWireShieldGenerator {
     var spiralLengthMultiplier = 1 / spiralLength;
     // Ширина ленты с учетом искажений при обмотке вокруг кабеля ???
     var adaptiveRibbonLength = (ribbonWidthWithSpacer + ribbonAdaptiveSpacer) * this.wiresCountPerRibbon * spiralLengthMultiplier;
+
+adaptiveRibbonLength = 1 / 2 * this.wireRadius * 2 * turnsCount * this.radius;
+
+console.log('r (радиус тонкого провода)', this.wireRadius);
+console.log('R (радиус толстого провода)', this.radius);
+console.log('L (длина толстого провода)', 1);
+console.log('n (кол-во витков на длину толстого провода L)', turnsCount);
+console.log('L/2r * 2nR', 1 / 2 * this.wireRadius * 2 * turnsCount * this.radius);
+
+//console.log(this.wireRadius, adaptiveRibbonLength);
+
+
     // Необходимый шаг длины кабеля, за который спираль проходит одну ширину ленты
     var adaptiveStepWidth = adaptiveRibbonLength / spiralLengthMultiplier;
     // Шаг длины кабеля, за который спираль проходит одну ширину провода в ленте
@@ -49,7 +61,7 @@ class NetWireShieldGenerator {
     // Кол-во витков за один шаг длины кабеля
     var turnsCountPerWidth = adaptiveWireStepLenght / this.width * turnsCount;
 
-console.log(spiralLength, adaptiveStepWidth, adaptiveRibbonLength);
+//console.log(spiralLength, adaptiveStepWidth, adaptiveRibbonLength);
 
     var wirePoints = [];
     var angle = startAngle;

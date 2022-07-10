@@ -43,6 +43,11 @@ class CableViewer {
     return this.renderer.domElement.toDataURL();
   }
 
+  newCableFromJson(json) {
+    this.cableGenerator = new CableGenerator();
+    return this.cableGenerator.setFromJson(json);
+  }
+
 }
 
 export { CableViewer };

@@ -17,7 +17,7 @@ class Materials {
         break;
       case 'steel':
         return new THREE.MeshStandardMaterial({
-              metalness: 0.7,
+              metalness: 0.5,
               roughness: 0.5,
               color: color != null ? color : 0xced3d4
             });

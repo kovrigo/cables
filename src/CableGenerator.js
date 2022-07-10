@@ -37,11 +37,11 @@ class CableGenerator {
     return this;
   }
 
-  circleWireCover(coverWidth, materialName, color = null) {
+  circleWireCover(coverWidth, materialName, color = null, text = null, textSize = null, textColor = null) {
     var material = this.materials.getMaterialByCode(materialName, color);
     var radius = this.currentRadius + coverWidth;
     var width = this.intersectionStepLength;
-    var circleWireCoverGenerator = new CircleWireCoverGenerator(radius, width, material);
+    var circleWireCoverGenerator = new CircleWireCoverGenerator(radius, width, material, text, textSize, textColor);
     var wire = circleWireCoverGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
@@ -50,7 +50,7 @@ class CableGenerator {
     return this;
   }
 
-  ribbon(materialName, thickness, color = null) {
+  ribbon(thickness, materialName, color = null) {
     var material = this.materials.getMaterialByCode(materialName, color);
     var radius = this.currentRadius;
     var width = this.intersectionStepLength * 1;
@@ -112,6 +112,38 @@ class CableGenerator {
       group.add(this.objects[i]);
     }
     return group;
+  }
+
+  setFromJson(json) {
+    for (var i = 0; i < json.buildSteps.length; i++) {
+      var buildStep = json.buildSteps[i];
+      switch (buildStep.step) {
+        case 'setDefaultStep':
+          this.setDefaultStep();
+          break
+        case 'setStep':
+          this.setStep(buildStep.options.newStep);
+          break
+        case 'clone':
+          this.clone(buildStep.options.count);
+          break
+        case 'circleWireCover':
+          this.circleWireCover(buildStep.options.radius, buildStep.options.material, buildStep.options.color, buildStep.options.text, buildStep.options.textSize, buildStep.options.textColor);
+          break
+        case 'twistedCircleWire':
+          this.twistedCircleWire(buildStep.options.radius, buildStep.options.count, buildStep.options.material);
+          break
+        case 'twistedCircleWireShield':
+          this.twistedCircleWireShield(buildStep.options.radius, buildStep.options.material);
+          break
+        case 'ribbon':
+          this.ribbon(buildStep.options.thickness, buildStep.options.material);
+          break          
+        default:
+          break
+      }
+    }
+    return this.compileScene();
   }
 
 }

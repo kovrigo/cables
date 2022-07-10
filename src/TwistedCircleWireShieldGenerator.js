@@ -19,7 +19,7 @@ class TwistedCircleWireShieldGenerator {
     var wireCenterVector = new THREE.Vector2(0, this.radius + adaptiveRadius);
     wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), angle);
     for (var i = 0; i <= this.width; i++) {
-      wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), THREE.Math.degToRad( 20 ));
+      wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), THREE.Math.degToRad( -20 ));
       wirePoints.push(new THREE.Vector3(i, wireCenterVector.x, wireCenterVector.y));
     }
     var wireSpline = new THREE.CatmullRomCurve3(wirePoints);

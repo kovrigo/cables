@@ -17,6 +17,10 @@ class SceneCreator {
     pointLight.position.set(-10, 0, 0);
     scene.add(pointLight);
 
+    var pointLight2 = new THREE.PointLight(0xffffff, 0.3);
+    pointLight2.position.set(0, -50, 0);
+    scene.add(pointLight2);
+
     const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
     directionalLight.position.set(10, 10, 10);
     directionalLight.target.position.set(0, 0, 0);
@@ -35,7 +39,7 @@ class SceneCreator {
 
     var canvas = renderer.domElement;
 
-    camera.position.set(-30, 10, 40);
+    camera.position.set(-30, 30, 40);
     camera.lookAt(new THREE.Vector3(5, 0, 0));
 
     return { scene, camera, renderer, canvas };
