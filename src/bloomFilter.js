@@ -98,7 +98,7 @@ var cableDescription = {
         radius: 0.4,
         material: "plastic",
         color: "#333333",
-        text: "allcables.pro",
+        text: "gardesoft.ru",
         textSize: 0.7,
         textColor: "#FFFFFF"
       }
@@ -106,9 +106,8 @@ var cableDescription = {
   ]
 };
 
-var cable = cableViewer.newCableFromJson(cableDescription);
+var cableJson = cableViewer.newCableFromJson(cableDescription);
 
-/*
 var cable = cableViewer.newCable()
   .twistedCircleWire(0.2, 16, "copper")
   .setStep(1)
@@ -125,6 +124,5 @@ var cable = cableViewer.newCable()
   .setStep(7)
   .circleWireCover(0.4, "plastic", "#222222")
   .compileScene();
-*/
 
-cableViewer.render(cable);
+cableViewer.render(cableJson);
