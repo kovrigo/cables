@@ -107,7 +107,7 @@ var cableDescription = {
 };
 
 var cableJson = cableViewer.newCableFromJson(cableDescription);
-
+/*
 var cable = cableViewer.newCable()
   .twistedCircleWire(0.2, 16, "copper")
   .setStep(1)
@@ -124,5 +124,5 @@ var cable = cableViewer.newCable()
   .setStep(7)
   .circleWireCover(0.4, "plastic", "#222222")
   .compileScene();
-
+*/
 cableViewer.render(cableJson);

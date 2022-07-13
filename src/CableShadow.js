@@ -41,9 +41,11 @@ class CableShadow {
       fragmentShader: shader.fragmentShader,
     });
 
-    const shadowGeo = new THREE.PlaneGeometry(length * 1.5, radius * 2 * 1.5);
+    var width = (radius + radius * 0.5) * 2;
+    var height = length + radius;
+    const shadowGeo = new THREE.PlaneGeometry(height, width);
     const shadowMesh = new THREE.Mesh(shadowGeo, shaderMaterial);
-    shadowMesh.position.set(length * 1.5 / 2 - radius / 2, -radius * 2 * 1.5, -radius / 2);
+    shadowMesh.position.set(height / 2 - width / 5, -radius * 2, - width / 5);
     shadowMesh.rotation.x = Math.PI * -.5;
     return shadowMesh;
 
