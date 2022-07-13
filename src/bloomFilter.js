@@ -98,7 +98,7 @@ var cableDescription = {
         radius: 0.4,
         material: "plastic",
         color: "#333333",
-        text: "gardesoft.ru",
+        text: "allcabls.pro",
         textSize: 0.7,
         textColor: "#FFFFFF"
       }
