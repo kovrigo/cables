@@ -89,6 +89,7 @@ class NetWireShieldGenerator {
 
     var wireBumpedCenterVector = null;
     var bumpMultiplier = 1.05;
+    var oldK = null;
 
     for (var i = 0; i <= this.width; i += cw) {
       var wireBumpedCenterVector = wireCenterVector.clone();
@@ -98,12 +99,14 @@ class NetWireShieldGenerator {
       var j = Math.floor(currentLen / (a + as) / 2);
       var k = j % 2;
 
-      //if (currentLen > a + as / 2 && currentLen < a + as + a + as/2 && counterCockwise) {
       if (k == 0) {
         wireBumpedCenterVector = wireBumpedCenterVector.multiplyScalar(bumpMultiplier);
       }
 
-      wirePoints.push(new THREE.Vector3(i, wireBumpedCenterVector.x, wireBumpedCenterVector.y));        
+      if (k != oldK) {
+        wirePoints.push(new THREE.Vector3(i, wireBumpedCenterVector.x, wireBumpedCenterVector.y));
+        oldK = k;
+      }
 
       currentLen += aw;
 
