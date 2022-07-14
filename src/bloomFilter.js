@@ -18,7 +18,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 1.3
+        newStep: 0
       }
     },
     {
@@ -26,13 +26,13 @@ var cableDescription = {
       options: {
         radius: 0.2,
         material: "plastic",
-        color: "#999999"
+        color: "#555555"
       }
     },
     {
       step: "setStep",
       options: {
-        newStep: 3
+        newStep: 2
       }
     },
     {
@@ -43,9 +43,17 @@ var cableDescription = {
       }
     },
     {
+      step: "circleWireCover",
+      options: {
+        radius: 0.3,
+        material: "plastic",
+        color: "#333333"
+      }
+    },    
+    {
       step: "clone",
       options: {
-        count: 3
+        count: 5
       }
     },
     {
@@ -80,12 +88,28 @@ var cableDescription = {
       step: "setDefaultStep"
     },
     {
+      step: "setStep",
+      options: {
+        newStep: 14
+      }
+    },    
+    {
+      step: "netWireShield",
+      options: {
+        radius: 0.1,
+        countPerRibbon: 7,
+        material: "steel",
+      }
+    },
+    /*    
+    {
       step: "ribbon",
       options: {
         thickness: 0.1,
         material: "steel"
       }
     },
+    */
     {
       step: "setStep",
       options: {
@@ -107,6 +131,7 @@ var cableDescription = {
 };
 
 var cableJson = cableViewer.newCableFromJson(cableDescription);
+
 /*
 var cable = cableViewer.newCable()
   .twistedCircleWire(0.2, 16, "copper")
@@ -125,4 +150,5 @@ var cable = cableViewer.newCable()
   .circleWireCover(0.4, "plastic", "#222222")
   .compileScene();
 */
+
 cableViewer.render(cableJson);

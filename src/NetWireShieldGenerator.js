@@ -15,8 +15,7 @@ class NetWireShieldGenerator {
     this.totalRadius = this.radius + this.wireRadius * 2;
   }
 
-  generateRibbonWireSpline(startAngle, counterCockwise, wireIndexInRibbon) {
-
+  generateRibbonWireSpline(startAngle, counterCockwise, wireIndexInRibbon, ribbonIndex) {
     var len = 2 * Math.PI * (this.radius + this.wireRadius);
     var ribbonWidth = this.wiresCountPerRibbon * this.wireRadius * 2;
     var ribbonSpacer = ribbonWidth / 3;
@@ -26,85 +25,100 @@ class NetWireShieldGenerator {
     var singleWireAngleOffset  = ribbonWidth / len * 2 * Math.PI / this.wiresCountPerRibbon;
 
 
-    var anglePerSingleWidth = THREE.Math.degToRad(20);
-    var bumpMultiplier = 1.1;
-    var bumped = false;
+    // Угол поворота спирали за единицу длины кабеля
+    var a1 = THREE.Math.degToRad(7);
+    // Кол-во витков спирали за единицу длины кабеля
+    var n = this.width * a1 / Math.PI;
+    // Радиус спирали
+    var R = this.radius + this.wireRadius;
+    // Длина окружности кабеля
+    var y = 2 * Math.PI * R;
+    // Длина кабеля
+    var x = this.width;
 
-    // Кол-во витков на единицу длины кабеля
-    var turnsCount = anglePerSingleWidth / 2 * Math.PI;
-    // Длина спирали для единичной длины кабеля
-    var spiralLength = 2 * Math.PI * (this.radius + this.wireRadius) * turnsCount;
-    // Соотношение между длиной спирали и длиной кабеля
-    var spiralLengthMultiplier = 1 / spiralLength;
-    // Ширина ленты с учетом искажений при обмотке вокруг кабеля ???
-    var adaptiveRibbonLength = (ribbonWidthWithSpacer + ribbonAdaptiveSpacer) * this.wiresCountPerRibbon * spiralLengthMultiplier;
+    // Развернуть боковую поверхность цилиндра в плоскость размером x на y
+    // и вычислить угол fi между лентами, идущими по и против часовой стрелки
+    var fi = Math.atan(y * n / (2 * x));
+    var lambda = Math.PI / 2 - fi;
 
-adaptiveRibbonLength = 1 / 2 * this.wireRadius * 2 * turnsCount * this.radius;
+    // Размеры ленты при закручивании в спираль
+    // Ширина ленты (основание равнобедренного треугольника)
+    var b = this.wireRadius * 2 * this.wiresCountPerRibbon;
+    // Сторона равнобедренного треугольника
+    var a = b / (2 * Math.cos(lambda));
 
-console.log('r (радиус тонкого провода)', this.wireRadius);
-console.log('R (радиус толстого провода)', this.radius);
-console.log('L (длина толстого провода)', 1);
-console.log('n (кол-во витков на длину толстого провода L)', turnsCount);
-console.log('L/2r * 2nR', 1 / 2 * this.wireRadius * 2 * turnsCount * this.radius);
+    // Размеры провода при закручивании в спираль
+    // Ширина провода в ленте (основание равноберенного треугольника)
+    var bw = this.wireRadius * 2;
+    // Высота из вершины к основанию
+    var cw = bw * Math.sin(lambda) / (2 * Math.cos(lambda));
+    // Сторона равнобедренного треугольника
+    var aw = cw / Math.sin(lambda);
+    var anglePerCw = cw * a1;
 
-//console.log(this.wireRadius, adaptiveRibbonLength);
+    // Размеры пустых мест между лентами при закручивани в спираль
+    // Ширина пустого места (основание равноберенного треугольника)
+    var bs = ribbonAdaptiveSpacer + ribbonSpacer;
+    // Высота из вершины к основанию
+    var cs = bs * Math.sin(lambda) / (2 * Math.cos(lambda));
+    // Сторона равнобедренного треугольника
+    var as = cs / Math.sin(lambda);
 
-
-    // Необходимый шаг длины кабеля, за который спираль проходит одну ширину ленты
-    var adaptiveStepWidth = adaptiveRibbonLength / spiralLengthMultiplier;
-    // Шаг длины кабеля, за который спираль проходит одну ширину провода в ленте
-    var adaptiveWireStepLenght = adaptiveStepWidth / this.wiresCountPerRibbon;
-    // Длина спирали за один шаг длины кабеля, за который спираль проходит одну ширину провода в ленте
-    var spiralLengthPerStep = spiralLength * adaptiveWireStepLenght;    
-    // Необходимый угол поворота за шаг длины кабеля
-    var adaptiveAnglePerWidth = anglePerSingleWidth * adaptiveWireStepLenght;
-    // Кол-во витков за один шаг длины кабеля
-    var turnsCountPerWidth = adaptiveWireStepLenght / this.width * turnsCount;
-
-//console.log(spiralLength, adaptiveStepWidth, adaptiveRibbonLength);
+    //console.log(anglePerCw);
 
     var wirePoints = [];
-    var angle = startAngle;
     var wireCenterVector = new THREE.Vector2(0, this.radius + this.wireRadius);
     var rotationDirection = counterCockwise ? 1 : -1;
-    wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), angle);
+    wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), startAngle);
 
-    var currentSpiralLength = 0;
-    var bump = false;
+    var currentLen = ((wireIndexInRibbon + 1) / this.wiresCountPerRibbon) * a;
+    currentLen += (ribbonIndex % 2) * (a + as);
+
+    if (!counterCockwise) {
+      currentLen = ((this.wiresCountPerRibbon - wireIndexInRibbon + 1) / this.wiresCountPerRibbon) * a;
+      if (ribbonIndex % 2 == 0) {
+        currentLen += (ribbonIndex % 2) * (a + as) - (a + as);  
+      } else {
+        currentLen += (ribbonIndex % 2) * (a + as) + (a + as); 
+      }
+    }
+
+    //var currentLen = 0;
+
+
+
     var wireBumpedCenterVector = null;
-    for (var i = 0; i <= this.width; i += adaptiveWireStepLenght) {
+    var bumpMultiplier = 1.05;
+
+    for (var i = 0; i <= this.width; i += cw) {
       var wireBumpedCenterVector = wireCenterVector.clone();
 
-      var j = Math.floor(currentSpiralLength / adaptiveRibbonLength);
-      if (j % 2 == 0) {
-        bump = !bump;
-      }
-      //console.log(currentSpiralLength, adaptiveRibbonLength, j);
+        //console.log(currentLen, a);
 
-      if (counterCockwise) {
-        if (bump) {
-          wireBumpedCenterVector = wireBumpedCenterVector.multiplyScalar(bumpMultiplier);
-        }
-      } else {
-        if (!bump) {
-          wireBumpedCenterVector = wireBumpedCenterVector.multiplyScalar(bumpMultiplier);
-        }      
-      }
-      wirePoints.push(new THREE.Vector3(i, wireBumpedCenterVector.x, wireBumpedCenterVector.y));
-      wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), rotationDirection * adaptiveAnglePerWidth );
+      var j = Math.floor(currentLen / (a + as) / 2);
+      var k = j % 2;
 
-      currentSpiralLength += spiralLengthPerStep;
+      //if (currentLen > a + as / 2 && currentLen < a + as + a + as/2 && counterCockwise) {
+      if (k == 0) {
+        wireBumpedCenterVector = wireBumpedCenterVector.multiplyScalar(bumpMultiplier);
+      }
+
+      wirePoints.push(new THREE.Vector3(i, wireBumpedCenterVector.x, wireBumpedCenterVector.y));        
+
+      currentLen += aw;
+
+      wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), rotationDirection * anglePerCw );
     }
     var wireSpline = new THREE.CatmullRomCurve3(wirePoints);
     return wireSpline;
   }
 
-  generateRibbonMesh(startAngle, singleWireAngleOffset, counterCockwise) {
+  generateRibbonMesh(startAngle, singleWireAngleOffset, counterCockwise, ribbonIndex) {
     var circleShape = this.shapeGenerator.circle(this.wireRadius);
     var group = new THREE.Group();
     var angle = startAngle;
     for (var i = 0; i < this.wiresCountPerRibbon; i++) {
-      var wireSpline = this.generateRibbonWireSpline(angle, counterCockwise, i);
+      var wireSpline = this.generateRibbonWireSpline(angle, counterCockwise, i, ribbonIndex);
       var extrudeSettings = {
         steps: 200,
         bevelEnabled: false,
@@ -131,8 +145,8 @@ console.log('L/2r * 2nR', 1 / 2 * this.wireRadius * 2 * turnsCount * this.radius
     var offset = 0;
     for (var i = 0; i < ribbonsCount; i++) {
       var startAngle = 2 * Math.PI / len * offset;
-      var mesh1 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, true);
-      var mesh2 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, false);
+      var mesh1 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, true, i);
+      var mesh2 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, false, i);
       group.add(mesh1);
       group.add(mesh2);
       offset += ribbonWidthWithSpacer + ribbonAdaptiveSpacer;

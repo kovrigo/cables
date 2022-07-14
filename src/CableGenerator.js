@@ -136,6 +136,9 @@ class CableGenerator {
         case 'twistedCircleWireShield':
           this.twistedCircleWireShield(buildStep.options.radius, buildStep.options.material);
           break
+        case 'netWireShield':
+          this.netWireShield(buildStep.options.radius, buildStep.options.countPerRibbon, buildStep.options.material);
+          break          
         case 'ribbon':
           this.ribbon(buildStep.options.thickness, buildStep.options.material);
           break          
