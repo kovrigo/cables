@@ -74,6 +74,7 @@ class NetWireShieldGenerator {
     var currentLen = ((wireIndexInRibbon + 1) / this.wiresCountPerRibbon) * a;
     currentLen += (ribbonIndex % 2) * (a + as);
 
+    // Смещение лент относительно друг друга
     if (!counterCockwise) {
       currentLen = ((this.wiresCountPerRibbon - wireIndexInRibbon + 1) / this.wiresCountPerRibbon) * a;
       if (ribbonIndex % 2 == 0) {
@@ -86,30 +87,46 @@ class NetWireShieldGenerator {
     //var currentLen = 0;
 
 
-
-    var wireBumpedCenterVector = null;
     var bumpMultiplier = 1.05;
     var oldK = null;
 
     for (var i = 0; i <= this.width; i += cw) {
-      var wireBumpedCenterVector = wireCenterVector.clone();
-
-        //console.log(currentLen, a);
-
       var j = Math.floor(currentLen / (a + as) / 2);
       var k = j % 2;
-
-      if (k == 0) {
-        wireBumpedCenterVector = wireBumpedCenterVector.multiplyScalar(bumpMultiplier);
-      }
-
+      // Точка изгиба ленты
       if (k != oldK) {
-        wirePoints.push(new THREE.Vector3(i, wireBumpedCenterVector.x, wireBumpedCenterVector.y));
+        // Лента поднимается вверх
+        if (k == 0) {
+          // Точка в начале подъема
+          var dx = cs / 2;
+          var da = a1 * dx * rotationDirection;
+          var v = wireCenterVector.clone();
+          v = v.rotateAround(new THREE.Vector2(0, 0), -da);
+          var p1 = new THREE.Vector3(i - dx, v.x, v.y);
+          // Точка в середине
+          v = wireCenterVector.clone();
+          v = v.multiplyScalar(1.05);
+          var p2 = new THREE.Vector3(i, v.x, v.y);
+          // Точка в конце подъема
+          v = wireCenterVector.clone();
+          v = v.rotateAround(new THREE.Vector2(0, 0), da);
+          v = v.multiplyScalar(1.1);
+          var p3 = new THREE.Vector3(i + dx, v.x, v.y);
+          // Добавить точки в кривую
+          wirePoints.push(p1);
+          wirePoints.push(p2);
+          wirePoints.push(p3);
+        } else {
+          // Лента опускается вниз
+          // Точка в середине
+          v = wireCenterVector.clone();
+          var p2 = new THREE.Vector3(i, v.x, v.y);
+
+          wirePoints.push(p2);
+        }
         oldK = k;
       }
-
       currentLen += aw;
-
       wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), rotationDirection * anglePerCw );
     }
     var wireSpline = new THREE.CatmullRomCurve3(wirePoints);
