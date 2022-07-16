@@ -74,9 +74,9 @@ var cableDescription = {
     {
       step: "circleWireCover",
       options: {
-        radius: 0.3,
+        radius: 0,
         material: "plastic",
-        color: "#333333",
+        color: "#00695c",
         alignWithNextLayer: true
       }
     },
