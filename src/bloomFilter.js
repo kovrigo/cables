@@ -18,7 +18,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 0
+        newStep: 2
       }
     },
     {
@@ -26,13 +26,8 @@ var cableDescription = {
       options: {
         radius: 0.2,
         material: "plastic",
-        color: "#555555"
-      }
-    },
-    {
-      step: "setStep",
-      options: {
-        newStep: 2
+        color: "#555555",
+        alignWithNextLayer: true
       }
     },
     {
@@ -73,7 +68,7 @@ var cableDescription = {
     {
       step: "setStep",
       options: {
-        newStep: 1.5
+        newStep: 14
       }
     },
     {
@@ -81,18 +76,10 @@ var cableDescription = {
       options: {
         radius: 0.3,
         material: "plastic",
-        color: "#333333"
+        color: "#333333",
+        alignWithNextLayer: true
       }
     },
-    {
-      step: "setDefaultStep"
-    },
-    {
-      step: "setStep",
-      options: {
-        newStep: 14
-      }
-    },    
     {
       step: "netWireShield",
       options: {

@@ -37,14 +37,18 @@ class CableGenerator {
     return this;
   }
 
-  circleWireCover(coverWidth, materialName, color = null, text = null, textSize = null, textColor = null) {
+  circleWireCover(coverWidth, materialName, color = null, alignWithNextLayer = false, text = null, textSize = null, textColor = null) {
+    alignWithNextLayer = alignWithNextLayer == null ? false : alignWithNextLayer;
     var material = this.materials.getMaterialByCode(materialName, color);
     var radius = this.currentRadius + coverWidth;
     var width = this.intersectionStepLength;
     var circleWireCoverGenerator = new CircleWireCoverGenerator(radius, width, material, text, textSize, textColor);
     var wire = circleWireCoverGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
-    this.currentIntersectionStep += this.intersectionStepLength;
+    if (!alignWithNextLayer) {
+      this.currentIntersectionStep += this.intersectionStepLength;
+    }
+    console.log(alignWithNextLayer)
     this.currentRadius += coverWidth;
     this.objects.push(wire);
     return this;
@@ -128,7 +132,7 @@ class CableGenerator {
           this.clone(buildStep.options.count);
           break
         case 'circleWireCover':
-          this.circleWireCover(buildStep.options.radius, buildStep.options.material, buildStep.options.color, buildStep.options.text, buildStep.options.textSize, buildStep.options.textColor);
+          this.circleWireCover(buildStep.options.radius, buildStep.options.material, buildStep.options.color, buildStep.options.alignWithNextLayer, buildStep.options.text, buildStep.options.textSize, buildStep.options.textColor);
           break
         case 'twistedCircleWire':
           this.twistedCircleWire(buildStep.options.radius, buildStep.options.count, buildStep.options.material);

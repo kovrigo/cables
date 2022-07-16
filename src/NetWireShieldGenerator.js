@@ -46,6 +46,7 @@ class NetWireShieldGenerator {
     var b = this.wireRadius * 2 * this.wiresCountPerRibbon;
     // Сторона равнобедренного треугольника
     var a = b / (2 * Math.cos(lambda));
+    var c = b * Math.sin(lambda) / (2 * Math.cos(lambda));
 
     // Размеры провода при закручивании в спираль
     // Ширина провода в ленте (основание равноберенного треугольника)
@@ -64,12 +65,20 @@ class NetWireShieldGenerator {
     // Сторона равнобедренного треугольника
     var as = cs / Math.sin(lambda);
 
-    //console.log(anglePerCw);
-
     var wirePoints = [];
     var wireCenterVector = new THREE.Vector2(0, this.radius + this.wireRadius);
     var rotationDirection = counterCockwise ? 1 : -1;
     wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), startAngle);
+
+    // Начальная точка для спремления провода
+    if (counterCockwise) {
+      var startVN = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius);
+      var startV = wireCenterVector.clone().add(startVN);
+      var startP = new THREE.Vector3(0, startV.x, startV.y);
+    } else {
+      var startV = wireCenterVector.clone();
+      var startP = new THREE.Vector3(0, startV.x, startV.y);
+    }
 
     var currentLen = ((wireIndexInRibbon + 1) / this.wiresCountPerRibbon) * a;
     currentLen += (ribbonIndex % 2) * (a + as);
@@ -84,51 +93,65 @@ class NetWireShieldGenerator {
       }
     }
 
-    //var currentLen = 0;
-
-
     var bumpMultiplier = 1.05;
     var oldK = null;
+    var firstBump = true;
 
-    for (var i = 0; i <= this.width; i += cw) {
+    for (var i = 0; i <= this.width + (c + cs) * 2; i += cw) {
       var j = Math.floor(currentLen / (a + as) / 2);
       var k = j % 2;
       // Точка изгиба ленты
       if (k != oldK) {
+        if (!firstBump) {
+        var dx = cs / 2;
+        var da = a1 * dx * rotationDirection;
+        var v, vn, p1, p2, p3;
         // Лента поднимается вверх
         if (k == 0) {
           // Точка в начале подъема
-          var dx = cs / 2;
-          var da = a1 * dx * rotationDirection;
-          var v = wireCenterVector.clone();
+          v = wireCenterVector.clone();
           v = v.rotateAround(new THREE.Vector2(0, 0), -da);
-          var p1 = new THREE.Vector3(i - dx, v.x, v.y);
+          p1 = new THREE.Vector3(i - dx, v.x, v.y);
           // Точка в середине
-          v = wireCenterVector.clone();
-          v = v.multiplyScalar(1.05);
-          var p2 = new THREE.Vector3(i, v.x, v.y);
+          vn = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius / 2);
+          v = wireCenterVector.clone().add(vn);
+          p2 = new THREE.Vector3(i, v.x, v.y);
           // Точка в конце подъема
-          v = wireCenterVector.clone();
+          vn = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius);
+          v = wireCenterVector.clone().add(vn);
           v = v.rotateAround(new THREE.Vector2(0, 0), da);
-          v = v.multiplyScalar(1.1);
-          var p3 = new THREE.Vector3(i + dx, v.x, v.y);
-          // Добавить точки в кривую
-          wirePoints.push(p1);
-          wirePoints.push(p2);
-          wirePoints.push(p3);
+          p3 = new THREE.Vector3(i + dx, v.x, v.y);
         } else {
           // Лента опускается вниз
+          // Точка в начале спуса
+          vn = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius);
+          v = wireCenterVector.clone().add(vn);
+          v = v.rotateAround(new THREE.Vector2(0, 0), -da);
+          p1 = new THREE.Vector3(i - dx, v.x, v.y);          
           // Точка в середине
+          vn = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius / 2);
+          v = wireCenterVector.clone().add(vn);
+          p2 = new THREE.Vector3(i, v.x, v.y);
+          // Точка в конце спуска
           v = wireCenterVector.clone();
-          var p2 = new THREE.Vector3(i, v.x, v.y);
-
-          wirePoints.push(p2);
+          v = v.rotateAround(new THREE.Vector2(0, 0), da);
+          p3 = new THREE.Vector3(i + dx, v.x, v.y);          
+        }
+        // Добавить точки в кривую
+        wirePoints.push(p1);  
+        wirePoints.push(p2);
+        wirePoints.push(p3);   
+        } else {
+          firstBump = false;
         }
         oldK = k;
       }
       currentLen += aw;
       wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), rotationDirection * anglePerCw );
     }
+
+    wirePoints.unshift(startP);
+
     var wireSpline = new THREE.CatmullRomCurve3(wirePoints);
     return wireSpline;
   }
