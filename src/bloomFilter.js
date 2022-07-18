@@ -1,9 +1,13 @@
 
+require("./UI/app.js");
+
+/*
 import { CableViewer } from "./CableViewer";
 
 var cableViewer = new CableViewer(500);
 window.cableViewer = cableViewer;
 document.body.appendChild(cableViewer.canvas);
+*/
 
 var cableDescription = {
   buildSteps: [
@@ -29,7 +33,7 @@ var cableDescription = {
         color: "#555555",
         alignWithNextLayer: true
       }
-    },
+    },/*
     {
       step: "twistedCircleWireShield",
       options: {
@@ -87,7 +91,7 @@ var cableDescription = {
         countPerRibbon: 7,
         material: "steel",
       }
-    },
+    },*/
     /*    
     {
       step: "ribbon",
@@ -117,7 +121,7 @@ var cableDescription = {
   ]
 };
 
-var cableJson = cableViewer.newCableFromJson(cableDescription);
+//var cableJson = cableViewer.newCableFromJson(cableDescription);
 
 /*
 var cable = cableViewer.newCable()
@@ -138,4 +142,4 @@ var cable = cableViewer.newCable()
   .compileScene();
 */
 
-cableViewer.render(cableJson);
+//cableViewer.render(cableJson);

@@ -42,7 +42,6 @@ class CableViewer {
     this.cable = cable;
 
     // Add fake shadow
-    console.log(cableLength);
     var cableShadow = new CableShadow();
     var shadow = cableShadow.make(cableLength, this.cableGenerator.currentRadius);
     this.scene.add(shadow);

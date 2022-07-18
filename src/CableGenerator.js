@@ -48,7 +48,6 @@ class CableGenerator {
     if (!alignWithNextLayer) {
       this.currentIntersectionStep += this.intersectionStepLength;
     }
-    console.log(alignWithNextLayer)
     this.currentRadius += coverWidth;
     this.objects.push(wire);
     return this;

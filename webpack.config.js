@@ -1,4 +1,4 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
+const { VueLoaderPlugin } = require('vue-loader')
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -20,17 +20,30 @@ const config = {
     new HtmlWebpackPlugin({
       template: "index.html",
     }),
+    new VueLoaderPlugin(),
   ],
   module: {
     rules: [
+      //{
+      //  test: /\.css$/i,
+      //  use: [stylesHandler, "css-loader"],
+      //},
       {
-        test: /\.css$/i,
-        use: [stylesHandler, "css-loader"],
+        test: /\.s?css$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader",
+        ],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: "asset",
       },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      }
     ],
   },
 };
