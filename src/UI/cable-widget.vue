@@ -6,9 +6,9 @@
     <div class="ui">
       <!-- Selects -->
       <div v-if="loaded">
-        <div v-for="reference in selectedCable" :key="reference.label">          
+        <div v-for="reference in selects" :key="reference.label">          
           {{ reference.label }}
-          <v-select  :options="reference.values" label="description"></v-select>
+          <v-select :options="reference.values" label="description" v-model="reference.value"></v-select>
         </div>        
       </div>
     </div>
@@ -30,10 +30,9 @@ export default {
 
   data() {
     return {
-      
-      selectedCable: {},
+      selects: null,
+      cable: null,
       loaded: false,
-
     }
   },
 
@@ -43,43 +42,61 @@ export default {
 
   watch: {
 
+    selects: {
+      handler: function (value) {
+        this.cable = _.map(value, function (reference) {
+          return {
+            reference_id: reference.label,
+            reference_value_id: reference.value.id,
+          };
+        });
+        this.renderCable();
+      },
+      deep: true,
+    },
+
   },
 
   mounted() {
     var self = this;
     // Create and initialize cable viewer
-    var cableViewer = new CableViewer(500);
-    this.$refs["viewer"].appendChild(cableViewer.canvas);
-
-    // Sort cable building steps by reference generator index
-    var buildSteps = _.sortBy(this.options.cable, function (step) {
-      return _.find(self.options.references, ['id', step.reference_id]).generator_index;
-    });
-    // Add json to each step
-    buildSteps = _.flatten(_.map(buildSteps, function (step) {
-      var referenceValues = _.find(self.options.references, ['id', step.reference_id]).values;
-      return _.find(referenceValues, ['id', step.reference_value_id]).json; 
-    }));
-
-    // Generate and render cable
-    var cableDescription = { buildSteps: buildSteps };    
-    var cable = cableViewer.newCableFromJson(cableDescription);
-    cableViewer.render(cable);
+    window.cableViewer = new CableViewer(500);
+    this.$refs["viewer"].appendChild(window.cableViewer.canvas);
 
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
-    this.selectedCable = _.map(sortedReferences, function (reference) {
+    this.selects = _.map(sortedReferences, function (reference) {
       return {
         label: reference.id,
-        value: null,
+        value: reference.values[0], // TODO: get current value from options
         values: reference.values,
       };
     });
 
-console.log(this.selectedCable);
-
     this.loaded = true;
-  }
+  },
+
+  methods: {
+
+    renderCable() {
+      var self = this;
+      // Sort cable building steps by reference generator index
+      var buildSteps = _.sortBy(this.cable, function (step) {
+        return _.find(self.options.references, ['id', step.reference_id]).generator_index;
+      });
+      // Add json to each step
+      buildSteps = _.flatten(_.map(buildSteps, function (step) {
+        var referenceValues = _.find(self.options.references, ['id', step.reference_id]).values;
+        return _.find(referenceValues, ['id', step.reference_value_id]).json; 
+      }));
+
+      // Generate and render cable
+      var cableDescription = { buildSteps: buildSteps };
+      var cable = window.cableViewer.newCableFromJson(cableDescription);
+      window.cableViewer.render(cable);
+    },
+
+  },
 
 }
 </script>
@@ -105,8 +122,7 @@ console.log(this.selectedCable);
       right: 0;
       top: 0;      
       width: 500px;
-      height: 500px;
-      background-color: $ui-bg-color;
+      //background-color: $ui-bg-color;
     }
 
   }

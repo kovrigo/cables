@@ -34,21 +34,6 @@ export default {
                     material: "copper"
                   }
                 },
-                {
-                  step: "setStep",
-                  options: {
-                    newStep: 2
-                  }
-                },
-                {
-                  step: "circleWireCover",
-                  options: {
-                    radius: 0.2,
-                    material: "plastic",
-                    color: "#555555",
-                    alignWithNextLayer: true
-                  }
-                },
 
               ]
             }
@@ -81,6 +66,29 @@ export default {
                     text: "allcabls.pro",
                     textSize: 0.7,
                     textColor: "#FFFFFF"
+                  }
+                }, 
+
+              ]
+            },
+
+            {
+              "id": "-",
+              "description": "Без брони.",
+              "json": [
+
+                {
+                  step: "setStep",
+                  options: {
+                    newStep: 6
+                  }
+                },
+                {
+                  step: "circleWireCover",
+                  options: {
+                    radius: 0.4,
+                    material: "plastic",
+                    color: "#СС8709",
                   }
                 }, 
 
