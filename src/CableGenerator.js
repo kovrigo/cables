@@ -11,7 +11,7 @@ class CableGenerator {
 
   intersectionDefaultStepLength = 5;
   intersectionStepLength = 5;
-  cloneSpacerWidthMultiplier = 1.3;
+  cloneSpacerWidthMultiplier = 1.1;
 
   currentIntersectionStep = 0;
   currentRadius = 0;
@@ -26,9 +26,11 @@ class CableGenerator {
     return this.currentIntersectionStep;
   }
 
-  twistedCircleWire(radius, count, materialName) {
+  twistedCircleWire(radius, count, materialName, isolated = false, isolationRadius = null) {
+    isolated = isolated == null ? false : isolated;
     var material = this.materials.getMaterialByCode(materialName);
-    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material);
+    var isolationMaterials = this.materials.getPaletteMaterials(count);
+    var twistedCircleWireGenerator = new TwistedCircleWireGenerator(radius, count, this.intersectionStepLength, material, isolated, isolationRadius, isolationMaterials);
     var wire = twistedCircleWireGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
@@ -134,7 +136,7 @@ class CableGenerator {
           this.circleWireCover(buildStep.options.radius, buildStep.options.material, buildStep.options.color, buildStep.options.alignWithNextLayer, buildStep.options.text, buildStep.options.textSize, buildStep.options.textColor);
           break
         case 'twistedCircleWire':
-          this.twistedCircleWire(buildStep.options.radius, buildStep.options.count, buildStep.options.material);
+          this.twistedCircleWire(buildStep.options.radius, buildStep.options.count, buildStep.options.material, buildStep.options.isolated, buildStep.options.isolationRadius);
           break
         case 'twistedCircleWireShield':
           this.twistedCircleWireShield(buildStep.options.radius, buildStep.options.material);

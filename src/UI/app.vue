@@ -30,11 +30,32 @@ export default {
                   step: "twistedCircleWire",
                   options: {
                     radius: 0.2,
-                    count: 16,
-                    material: "copper"
+                    count: 3,
+                    material: "copper",
+                    isolated: true,
+                    isolationRadius: 0.05,
                   }
                 },
-
+                {
+                  step: "setStep",
+                  options: {
+                    newStep: 2
+                  }
+                },
+                {
+                  step: "circleWireCover",
+                  options: {
+                    radius: 0.2,
+                    material: "plastic",
+                    color: "#999999",
+                  }
+                }, 
+                {
+                  step: "clone",
+                  options: {
+                    count: 4
+                  }
+                },
               ]
             }
 

@@ -1,9 +1,10 @@
 import * as THREE from "three";
+import palette from "google-palette";
 
 class Materials {
 
   constructor() {
-    
+
   }
 
   getMaterialByCode(code, color = null) {
@@ -29,6 +30,19 @@ class Materials {
             });
         break;
     }
+  }
+
+  getPaletteMaterials(count) {
+    var materials = [];
+    var colors = palette('mpn65', count);
+    for (var i = 0; i < count; i++) {
+      var material = new THREE.MeshPhongMaterial({
+          color: '#' + colors[i],
+          shininess: 4
+        });
+      materials.push(material);
+    }
+    return materials;
   }
 
 }

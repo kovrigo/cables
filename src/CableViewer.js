@@ -9,6 +9,7 @@ import { Reflector } from 'three/examples/jsm/objects/Reflector';
 class CableViewer {
 
   cable = null;
+  shadow = null;
 
   constructor(size = 500) {
     var sceneCreator = new SceneCreator(size);
@@ -37,14 +38,16 @@ class CableViewer {
     this.utils.fitCameraToObject(this.camera, cableLength, 1.25, this.controls);
     if (this.cable != null) {
       this.scene.remove(this.cable);
+      this.scene.remove(this.shadow);
       this.cable = null;
+      this.shadow = null;
     }
     this.cable = cable;
 
     // Add fake shadow
     var cableShadow = new CableShadow();
-    var shadow = cableShadow.make(cableLength, this.cableGenerator.currentRadius);
-    this.scene.add(shadow);
+    this.shadow = cableShadow.make(cableLength, this.cableGenerator.currentRadius);
+    this.scene.add(this.shadow);
 
     this.scene.add(this.cable);
     this.renderer.render(this.scene, this.camera);
