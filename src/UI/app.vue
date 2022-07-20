@@ -56,6 +56,14 @@ export default {
                     count: 4
                   }
                 },
+                {
+                  step: "groundWire",
+                  options: {
+                    radius: 0.2,
+                    material: "copper",
+                    coverRadius: 0.1,
+                  }
+                },                 
               ]
             }
 
@@ -75,7 +83,7 @@ export default {
                 {
                   step: "setStep",
                   options: {
-                    newStep: 10
+                    newStep: 3
                   }
                 },
                 {
@@ -88,7 +96,22 @@ export default {
                     textSize: 0.7,
                     textColor: "#FFFFFF"
                   }
-                }, 
+                },
+                {
+                  step: "setStep",
+                  options: {
+                    newStep: 7
+                  }
+                },                
+                {
+                  step: "corrugationCover",
+                  options: {
+                    radius: 0.2,
+                    material: "steel",
+                    stripeWidth: 0.7,
+                    spacerWidth: 0.3,
+                  }
+                },
 
               ]
             },

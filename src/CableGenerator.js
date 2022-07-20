@@ -5,6 +5,8 @@ import { CloneGenerator } from "./CloneGenerator";
 import { RibbonGenerator } from "./RibbonGenerator";
 import { TwistedCircleWireShieldGenerator } from "./TwistedCircleWireShieldGenerator";
 import { NetWireShieldGenerator } from "./NetWireShieldGenerator";
+import { GroundWireGenerator } from "./GroundWireGenerator";
+import { CorrugationCoverGenerator } from "./CorrugationCoverGenerator";
 import { Materials } from "./Materials";
 
 class CableGenerator {
@@ -58,7 +60,7 @@ class CableGenerator {
   ribbon(thickness, materialName, color = null) {
     var material = this.materials.getMaterialByCode(materialName, color);
     var radius = this.currentRadius;
-    var width = this.intersectionStepLength * 1;
+    var width = this.intersectionStepLength;
     var underlyingObject = this.objects[this.objects.length - 1];
     var ribbonGenerator = new RibbonGenerator(radius, width, thickness, material, underlyingObject);
     var ribon = ribbonGenerator.generate();
@@ -94,12 +96,39 @@ class CableGenerator {
   clone(count) {
     var object = this.compileScene();
     var radius = this.currentRadius * this.cloneSpacerWidthMultiplier;
+    this.clonedRadius = radius;
+    this.clonedCount = count;
     var cloneGenerator = new CloneGenerator(object, radius, count);
-    var clonedObjects = cloneGenerator.generate();
+    this.clonedObjects = cloneGenerator.generate();
     this.currentRadius = cloneGenerator.totalRadius;
-    this.objects = [clonedObjects];
+    this.objects = [this.clonedObjects];
     return this;
   }
+
+  groundWire(radius, materialName, coverRadius) {
+    var material = this.materials.getMaterialByCode(materialName);
+    var width = this.intersectionStepLength;
+    var groundWireGenerator = new GroundWireGenerator(radius, material, coverRadius, this.currentIntersectionStep, this.clonedRadius, this.clonedCount, this.clonedObjects);
+    var groundWire = groundWireGenerator.generate();
+    groundWire.position.set(0, 0, 0);
+    this.currentRadius = groundWireGenerator.totalRadius;
+    this.objects.push(groundWire);
+    return this;
+  }
+
+  corrugationCover(radius, materialName, stripeWidth, spacerWidth) {
+    var material = this.materials.getMaterialByCode(materialName);
+    var width = this.intersectionStepLength;
+    var corrugationCoverGenerator = new CorrugationCoverGenerator(this.currentRadius, radius, stripeWidth, spacerWidth, material, width);
+    var cover = corrugationCoverGenerator.generate();
+    cover.position.set(this.currentIntersectionStep, 0, 0);
+    this.currentIntersectionStep += this.intersectionStepLength;
+    this.currentRadius += radius;
+    this.objects.push(cover);
+    return this;
+  }
+
+  CorrugationCoverGenerator
 
   setStep(step) {
     this.intersectionStepLength = step;
@@ -146,7 +175,13 @@ class CableGenerator {
           break          
         case 'ribbon':
           this.ribbon(buildStep.options.thickness, buildStep.options.material);
-          break          
+          break
+        case 'groundWire':
+          this.groundWire(buildStep.options.radius, buildStep.options.material, buildStep.options.coverRadius);
+          break;
+        case 'corrugationCover':
+          this.corrugationCover(buildStep.options.radius, buildStep.options.material, buildStep.options.stripeWidth, buildStep.options.spacerWidth);
+          break;
         default:
           break
       }
