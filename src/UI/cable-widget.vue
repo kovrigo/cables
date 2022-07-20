@@ -60,7 +60,9 @@ export default {
   mounted() {
     var self = this;
     // Create and initialize cable viewer
-    window.cableViewer = new CableViewer(500);
+    window.cableViewer = new CableViewer(500, function (progress) {
+      console.log(progress);
+    });
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
 
     // Generate selects with values

@@ -20,8 +20,9 @@ class CableGenerator {
 
   objects = [];
 
-  constructor() {
+  constructor(onProgress) {
     this.materials = new Materials();
+    this.onProgress = onProgress;
   }
 
   cableLength() {
@@ -150,6 +151,11 @@ class CableGenerator {
 
   setFromJson(json) {
     for (var i = 0; i < json.buildSteps.length; i++) {
+
+      if (this.onProgress) {
+       this.onProgress((i + 1) / json.buildSteps.length);
+      }
+
       var buildStep = json.buildSteps[i];
       switch (buildStep.step) {
         case 'setDefaultStep':

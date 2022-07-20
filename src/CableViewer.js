@@ -11,7 +11,8 @@ class CableViewer {
   cable = null;
   shadow = null;
 
-  constructor(size = 500) {
+  constructor(size = 500, onProgress) {
+    this.onProgress = onProgress;
     var sceneCreator = new SceneCreator(size);
     var { scene, camera, renderer, canvas } = sceneCreator.make();
     this.utils = new Utils();
@@ -55,7 +56,7 @@ class CableViewer {
   }
 
   newCableFromJson(json) {
-    this.cableGenerator = new CableGenerator();
+    this.cableGenerator = new CableGenerator(this.onProgress);
     return this.cableGenerator.setFromJson(json);
   }
 
