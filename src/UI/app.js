@@ -1,7 +1,14 @@
-import _ from 'lodash';
 import { createApp } from 'vue/dist/vue.esm-bundler';
-import TestApp from './app.vue'
+import AppWrapper from './app.vue'
 
-const app = createApp({});
-app.component('app', TestApp);
-app.mount('#app');
+class CableWidget {
+
+  constructor(element, options) {
+	var app = createApp(AppWrapper);
+	app.config.globalProperties.cableWidgetOptions = options;
+	app.mount(element);
+  }
+
+}
+
+export { CableWidget };
