@@ -83,9 +83,11 @@ export default {
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
+      var referenceValueId = _.find(self.options.cable, ['reference_id', reference.id]).reference_value_id;
+      var referenceValue = _.find(reference.values, ['id', referenceValueId]);
       return {
         label: reference.id,
-        value: reference.values[0], // TODO: get current value from options
+        value: referenceValue,
         values: reference.values,
       };
     });
