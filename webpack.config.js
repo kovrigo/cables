@@ -9,8 +9,16 @@ const stylesHandler = "style-loader";
 
 const config = {
   entry: {
-    main: "./src/index.js",
-    module: "./src/UI/app.js",
+    main: {
+      import: "./src/index.js",
+    },
+    bundle: {
+      import: "./src/UI/app.js",
+      library: {
+        name: 'CableWidget',
+        type: 'umd',
+      },
+    },
   },
   output: {
     path: path.resolve(__dirname, "dist"),
