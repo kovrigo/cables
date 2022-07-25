@@ -79,7 +79,7 @@ export default {
     });
 
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
-    
+
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
@@ -114,9 +114,10 @@ export default {
       }, 1);
 
     },
-    onSelected: function(reference, option) {
+    onSelected: function(selectedExceptions) {
       //var x = this.selects;
-      console.log(this.selects);
+      console.log(selectedExceptions);
+      
     },
   },
 

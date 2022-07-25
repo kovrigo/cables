@@ -2917,22 +2917,37 @@ var options = {
       ],
       "exceptions": [
         {
-          "id": "ХЛ",
-          "exluded": [
-            "ЭХЛ",
+          "reference_id": "Специальный показатель",
+          "reference_value_id": "ХЛ",
+          "exlude": [
+            {
+            "reference_id": "Специальный показатель",
+            "reference_value_id": "ЭХЛ",
+            }
           ]
-          
         },
         {
-          "id": "ЗГ",
-          "exluded": [
-            "нг(А)",
-            "нг(А)-LS",
-            "нг(А)-FR",
-            "нг(А)-FRHF",
+          "reference_id": "Специальный показатель",
+          "reference_value_id": "ЗГ",
+          "exlude": [
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-LS",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-FR",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-FRHF",
+            }
           ]
-          
-        }
+        },
       ],
       "cable": [
         {
