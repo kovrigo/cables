@@ -114,10 +114,27 @@ export default {
       }, 1);
 
     },
-    onSelected: function(selectedExceptions) {
-      //var x = this.selects;
-      console.log(selectedExceptions);
+    onSelected: function(selectedValue, selects) {
       
+
+      var self = this;
+
+      _.forEach(this.options.exceptions, function(exception) {
+        var x = _.find(self.selects, ['label', exception.reference_id]);
+
+        if (selectedValue.id == exception.reference_value_id && x.label == exception.reference_id) {
+          _.forEach(exception.exclude, function(exclude) {
+            var y = _.find(self.selects, ['label', exclude.reference_id]);
+            var exl = _.find(self.options.references, ['id', y.label]);
+            
+            var xyx = _.filter(y.values, function(eee) {
+
+                return eee.id != exclude.reference_value_id;
+            });
+          });
+        }
+      });
+    
     },
   },
 

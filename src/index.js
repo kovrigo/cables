@@ -2919,7 +2919,7 @@ var options = {
         {
           "reference_id": "Специальный показатель",
           "reference_value_id": "ХЛ",
-          "exlude": [
+          "exclude": [
             {
             "reference_id": "Специальный показатель",
             "reference_value_id": "ЭХЛ",
@@ -2929,7 +2929,7 @@ var options = {
         {
           "reference_id": "Специальный показатель",
           "reference_value_id": "ЗГ",
-          "exlude": [
+          "exclude": [
             {
               "reference_id": "Показатель пожарной опасности",
               "reference_value_id": "нг(А)",
