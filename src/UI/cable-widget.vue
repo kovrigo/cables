@@ -114,27 +114,47 @@ export default {
       }, 1);
 
     },
-    onSelected: function(selectedValue, selects) {
-      
-
+    onSelected: function(selectedValue) {
+      // Обявляем self = this
       var self = this;
 
+      var sortedReferences = _.sortBy(self.options.references, ['index']);
+      self.selects = _.map(sortedReferences, function (reference) {
+        return {
+          label: reference.id,
+          value: reference.values[0], // TODO: get current value from options
+          values: reference.values,
+        };
+      });
+            
+
+      // Ищем имена справочников по исключениям
       _.forEach(this.options.exceptions, function(exception) {
         var x = _.find(self.selects, ['label', exception.reference_id]);
+        console.log(x);
 
+        // Проверяем соотвествие справочника и значение исключения с текущим выбранным
         if (selectedValue.id == exception.reference_value_id && x.label == exception.reference_id) {
+          console.log('Исключение подходит');
+          // Ищем то, что исключать
           _.forEach(exception.exclude, function(exclude) {
             var y = _.find(self.selects, ['label', exclude.reference_id]);
             var exl = _.find(self.options.references, ['id', y.label]);
-            
-            var xyx = _.filter(y.values, function(eee) {
-
-                return eee.id != exclude.reference_value_id;
+            y.values = _.filter(y.values, function(eee) {
+                console.log('Параметр исключен');
+                return eee.id != exclude.reference_value_id;       
             });
+            
+            
           });
         }
+        else {
+          console.log('Исключение не подходит');
+
+          
+          
+        }
       });
-    
     },
   },
 

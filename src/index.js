@@ -2948,6 +2948,28 @@ var options = {
             }
           ]
         },
+        {
+          "reference_id": "Число витых пар",
+          "reference_value_id": "5",
+          "exclude": [
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-LS",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-FR",
+            },
+            {
+              "reference_id": "Показатель пожарной опасности",
+              "reference_value_id": "нг(А)-FRHF",
+            }
+          ]
+        },
       ],
       "cable": [
         {
