@@ -85,19 +85,15 @@ export default {
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
-      console.log(reference);
-      // reference - текущий справочник
-      // Получить текущее выбранное значение
-      // Цикл по всем значениям справочника reference.values (текущее значение != текущее выбранное)
-        // Цикл по всем исключениям
-          // Цикл по всем исключаемым значениям (исключаемый справочник, исключаемое значение)
-            // Если исключаемый справочник == текущий справочник && 
-            // исключаемое значение == текущее значение
-              // Убрать значение из списка
+
+
+      var referenceValueId = _.find(self.options.cable, ['reference_id', reference.id]).reference_value_id;
+      var referenceValue = _.find(reference.values, ['id', referenceValueId]);
       return {
         label: reference.id,
-        value: reference.values[0], // Записать текущее выбранное значение
-        values: reference.values, // Записать новый список
+        value: referenceValue,
+        values: reference.values,
+
       };
     });
     this.loaded = true;
