@@ -2980,163 +2980,50 @@ var options = {
           "reference_id": "Броня под наружной оболочкой",
           "reference_value_id": "К"
         },
+        {
+          "reference_id": "Общий экран поверх сердечника из всех витых пар",
+          "reference_value_id": "-"
+        },
+        {
+          "reference_id": "Материал оболочки и изоляци",
+          "reference_value_id": "В"
+        },
+        {
+          "reference_id": "Изоляция индивидуальных экранов",
+          "reference_value_id": "-"
+        },
+        {
+          "reference_id": "Индивидуальный экран каждой пары",
+          "reference_value_id": "-"
+        },
+        {
+          "reference_id": "Луженые жилы",
+          "reference_value_id": "-"
+        },
+        {
+          "reference_id": "Номинальный диаметр / сечение жил",
+          "reference_value_id": "0,40"
+        },
+        {
+          "reference_id": "Число витых пар",
+          "reference_value_id": "1"
+        },
+        {
+          "reference_id": "Показатель пожарной опасности",
+          "reference_value_id": "-"
+        },
+        {
+          "reference_id": "Марка",
+          "reference_value_id": "КВИП"
+        },
+        {
+          "reference_id": "Специальный показатель",
+          "reference_value_id": "ХЛ"
+        },
+
       ],
      };
 
-options = {
-  "references": [
-    {
-      "id": "Высокая гибкость",
-      "index": 0,
-      "generator_index": 1,
-      "values": [
-        {
-          "id": "без индекса",
-          "description": "обычная гибкость",
-          "json": []
-        },
-        {
-          "id": "Г",
-          "description": "кабель с жилами высокой гибкости",
-          "json": []
-        }
-      ]
-    },
-    {
-      "id": "Показатель пожарной опасности",
-      "index": 1,
-      "generator_index": 2,
-      "values": [
-        {
-          "id": "без индекса",
-          "description": "не распространяющие горение при одиночной прокладке",
-          "json": []
-        },
-        {
-          "id": "нг(А)",
-          "description": "не распространяющие горение при групповой прокладке по категории \"А\"",
-          "json": []
-        },
-        {
-          "id": "нг(А)-LS",
-          "description": "с пониженным дымо- и газовыделением",
-          "json": []
-        },
-        {
-          "id": "нг(А)-LSLTx",
-          "description": "с пониженным дымо- и газовыделением, с низкой токсичностью продуктов горения",
-          "json": []
-        },
-        {
-          "id": "нг(А)-HF",
-          "description": "не выделяющие коррозионно-активных газообразных продуктов при горении и тлении",
-          "json": []
-        },
-        {
-          "id": "нг(А)-FR",
-          "description": "кабели огнестойкие",
-          "json": []
-        },
-        {
-          "id": "нг(А)-FRLS",
-          "description": "кабели огнестойкие, с пониженным дымо- и газовыделением",
-          "json": []
-        },
-        {
-          "id": "нг(А)-FRLSLTx",
-          "description": "кабели огнестойкие, с пониженным дымо- и газовыделением, с низкой токсичностью продуктов горения",
-          "json": []
-        },
-        {
-          "id": "нг(А)-FRHF",
-          "description": "кабели огнестойкие, не выделяющие коррозионно-активных газообразных продуктов при горении и тлении",
-          "json": []
-        }
-      ]
-    },
-    {
-      "id": "Материал оболочки и изоляции",
-      "index": 2,
-      "generator_index": 9,
-      "values": [
-        {
-          "id": "В",
-          "description": "ПВХ пластикат",
-          "json": []
-        },
-        {
-          "id": "П",
-          "description": "полимерные композиции, не содержащие галогенов",
-          "json": []
-        },
-        {
-          "id": "Пс",
-          "description": "изоляция сшитый полиолефин, оболочка - ПВХ (темп.экспл. до +80°С)",
-          "json": []
-        },
-        {
-          "id": "T",
-          "description": "термопластичный эластомер",
-          "json": [
-            {
-              "step": "twistedCircleWire",
-              "options": {
-                "radius": 0.2,
-                "count": 3,
-                "material": "copper",
-                "isolated": true,
-                "isolationRadius": 0.05
-              }
-            },
-            {
-              "step": "setStep",
-              "options": {
-                "newStep": 2
-              }
-            },
-            {
-              "step": "circleWireCover",
-              "options": {
-                "radius": 0.2,
-                "material": "plastic",
-                "color": "#999999"
-              }
-            },
-            {
-              "step": "clone",
-              "options": {
-                "count": 4
-              }
-            },
-            {
-              "step": "groundWire",
-              "options": {
-                "radius": 0.2,
-                "material": "copper",
-                "coverRadius": 0.1
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "exceptions": [],
-  "cable": [
-    {
-      "reference_id": "Высокая гибкость",
-      "reference_value_id": "Г"
-    },
-    {
-      "reference_id": "Показатель пожарной опасности",
-      "reference_value_id": "нг(А)-FRHF"
-    },
-    {
-      "reference_id": "Материал оболочки и изоляции",
-      "reference_value_id": "T"
-    }
-  ]
-};
 
 import CableWidget from "./UI/app.js";
 //import CableWidget from "../dist/bundle.js";
