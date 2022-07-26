@@ -79,14 +79,25 @@ export default {
     });
 
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
+    
+
 
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
+      console.log(reference);
+      // reference - текущий справочник
+      // Получить текущее выбранное значение
+      // Цикл по всем значениям справочника reference.values (текущее значение != текущее выбранное)
+        // Цикл по всем исключениям
+          // Цикл по всем исключаемым значениям (исключаемый справочник, исключаемое значение)
+            // Если исключаемый справочник == текущий справочник && 
+            // исключаемое значение == текущее значение
+              // Убрать значение из списка
       return {
         label: reference.id,
-        value: reference.values[0], // TODO: get current value from options
-        values: reference.values,
+        value: reference.values[0], // Записать текущее выбранное значение
+        values: reference.values, // Записать новый список
       };
     });
     this.loaded = true;
@@ -117,16 +128,6 @@ export default {
     onSelected: function(selectedValue) {
       // Обявляем self = this
       var self = this;
-
-      var sortedReferences = _.sortBy(self.options.references, ['index']);
-      self.selects = _.map(sortedReferences, function (reference) {
-        return {
-          label: reference.id,
-          value: reference.values[0], // TODO: get current value from options
-          values: reference.values,
-        };
-      });
-            
 
       // Ищем имена справочников по исключениям
       _.forEach(this.options.exceptions, function(exception) {
