@@ -88,12 +88,39 @@ export default {
 
       var referenceValueId = _.find(self.options.cable, ['reference_id', reference.id]).reference_value_id;
       var referenceValue = _.find(reference.values, ['id', referenceValueId]);
-      console.log(reference);
-      // reference - текущий справочник
-      // Получить текущее выбранное значение
-      // Цикл по всем значениям справочника reference.values (текущее значение != текущее выбранное)
+
         // Цикл по всем исключениям
+        _.forEach(self.options.exceptions, function(exception) {
+          var x = _.find(self.options.exceptions, ['reference_value_id', exception.reference_value_id]);
+          
+
           // Цикл по всем исключаемым значениям (исключаемый справочник, исключаемое значение)
+          _.forEach(x.exclude, function(exluded) {
+            var exluded = _.find(x.exclude, ['reference_value_id', exluded.reference_value_id]);
+            
+            if (referenceValueId == x.reference_value_id) {
+                console.log("Исключающее совпадает");
+
+                var y = _.find(self.options.references, ['id', exluded.reference_id]);
+
+                //console.log(y.values);
+
+                y.values = _.filter(y.values, function(eee) {
+                  return eee.reference_id != exluded.reference_value_id;       
+                });
+                //console.log(y.values);
+                
+            
+            }
+            if (referenceValueId == exluded.reference_value_id) {
+                console.log("Исключаемое совпадает");
+            }
+            
+          });
+        });
+
+        
+          
             // Если исключаемый справочник == текущий справочник && 
             // исключаемое значение == текущее значение
               // Убрать значение из списка
@@ -111,6 +138,11 @@ export default {
   methods: {
     renderCable() {
       var self = this;
+
+
+
+
+
       // Sort cable building steps by reference generator index
       var buildSteps = _.sortBy(this.cable, function (step) {
         return _.find(self.options.references, ['id', step.reference_id]).generator_index;
@@ -137,7 +169,6 @@ export default {
       // Ищем имена справочников по исключениям
       _.forEach(this.options.exceptions, function(exception) {
         var x = _.find(self.selects, ['label', exception.reference_id]);
-        console.log(x);
 
         // Проверяем соотвествие справочника и значение исключения с текущим выбранным
         if (selectedValue.id == exception.reference_value_id && x.label == exception.reference_id) {
@@ -145,19 +176,31 @@ export default {
           // Ищем то, что исключать
           _.forEach(exception.exclude, function(exclude) {
             var y = _.find(self.selects, ['label', exclude.reference_id]);
-            var exl = _.find(self.options.references, ['id', y.label]);
             y.values = _.filter(y.values, function(eee) {
                 console.log('Параметр исключен');
                 return eee.id != exclude.reference_value_id;       
             });
-            
-            
           });
         }
         else {
           console.log('Исключение не подходит');
+      
+          _.forEach(exception.exclude, function(exclude) {
+            var y = _.find(self.selects, ['label', exclude.reference_id]);
+            var z = _.find(self.selects, ['label', y.label]);
+            
+            var xx = _.find(z.values, ['id', exclude.reference_value_id]);
 
-          
+  
+            _.forEach(self.selects, function(reference) {
+              var q = _.includes(reference.values, xx.id);
+              console.log(q);
+            });
+            y.values.push(xx);  
+           // console.log(self.selects);
+             
+            
+          });
           
         }
       });

@@ -2957,16 +2957,8 @@ var options = {
               "reference_value_id": "нг(А)",
             },
             {
-              "reference_id": "Показатель пожарной опасности",
-              "reference_value_id": "нг(А)-LS",
-            },
-            {
-              "reference_id": "Показатель пожарной опасности",
-              "reference_value_id": "нг(А)-FR",
-            },
-            {
-              "reference_id": "Показатель пожарной опасности",
-              "reference_value_id": "нг(А)-FRHF",
+              "reference_id": "Специальный показатель",
+              "reference_value_id": "ЭХЛ",
             }
           ]
         },
@@ -3006,11 +2998,11 @@ var options = {
         },
         {
           "reference_id": "Число витых пар",
-          "reference_value_id": "1"
+          "reference_value_id": "5"
         },
         {
           "reference_id": "Показатель пожарной опасности",
-          "reference_value_id": "-"
+          "reference_value_id": "нг(А)"
         },
         {
           "reference_id": "Марка",
@@ -3018,7 +3010,7 @@ var options = {
         },
         {
           "reference_id": "Специальный показатель",
-          "reference_value_id": "ХЛ"
+          "reference_value_id": "ЗГ"
         },
 
       ],
