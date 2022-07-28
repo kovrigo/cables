@@ -136,9 +136,9 @@ export default {
     right: 10px;
     width: 850px;
     height: auto;
-    //border: 1px solid rgb(63, 63, 63);
+    border: 1px solid rgb(63, 63, 63);
     border-radius: 0px;
-    //box-shadow: 5px 5px 5px rgba(61, 61, 61, 0.438);
+    box-shadow: 5px 5px 5px rgba(61, 61, 61, 0.438);
     z-index: 1;
     overflow: hidden;
 

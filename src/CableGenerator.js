@@ -20,6 +20,16 @@ class CableGenerator {
 
   objects = [];
 
+  stepVariables = {
+    twistedCircleWire: {
+      radius: null,
+      material: null
+    },
+    clone: {
+      count: null,
+    }
+  };
+
   constructor(onProgress) {
     this.materials = new Materials();
     this.onProgress = onProgress;
@@ -73,7 +83,7 @@ class CableGenerator {
   }
 
   twistedCircleWireShield(wireRadius, materialName) {
-    var material = this.materials.getMaterialByCode(materialName);
+    var material = this.materials.getMaterialConstructorByCode(materialName);
     var twistedCircleWireShieldGenerator = new TwistedCircleWireShieldGenerator(this.currentRadius, wireRadius, this.intersectionStepLength, material);
     var wire = twistedCircleWireShieldGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
@@ -84,7 +94,8 @@ class CableGenerator {
   }
 
   netWireShield(wireRadius, wiresCountPerRibbon, materialName) {
-    var material = this.materials.getMaterialByCode(materialName);
+    var material = this.materials.getMaterialConstructorByCode(materialName);
+    //var material = this.materials.getMaterialByCode(materialName);
     var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, material);
     var wire = netWireShieldGenerator.generate();
     wire.position.set(this.currentIntersectionStep, 0, 0);
@@ -129,16 +140,26 @@ class CableGenerator {
     return this;
   }
 
-  CorrugationCoverGenerator
-
   setStep(step) {
-    this.intersectionStepLength = step;
+    var newStep = step.toString();
+    if (newStep.includes('%')) {
+      newStep = newStep.replace('%', '');
+      newStep = parseFloat(newStep);
+      newStep = newStep * this.currentRadius * 2 / 100;
+    } else {
+      newStep = parseFloat(newStep);
+    }
+    this.intersectionStepLength = newStep;
     return this;
   }
 
   setDefaultStep() {
     this.intersectionStepLength = this.intersectionDefaultStepLength;
     return this;
+  }
+
+  setVariable(step, option, value) {
+    this.stepVariables[step][option] = value;
   }
 
   compileScene() {
@@ -158,6 +179,9 @@ class CableGenerator {
 
       var buildStep = json.buildSteps[i];
       switch (buildStep.step) {
+        case 'setVariable':
+          this.setVariable(buildStep.options.step, buildStep.options.option, buildStep.options.value);
+          break        
         case 'setDefaultStep':
           this.setDefaultStep();
           break
@@ -165,13 +189,18 @@ class CableGenerator {
           this.setStep(buildStep.options.newStep);
           break
         case 'clone':
-          this.clone(buildStep.options.count);
+          var count = this.stepVariables.clone['count'] ? this.stepVariables.clone['count'] : buildStep.options.count;
+          count = parseInt(count);
+          this.clone(count);
           break
         case 'circleWireCover':
           this.circleWireCover(buildStep.options.radius, buildStep.options.material, buildStep.options.color, buildStep.options.alignWithNextLayer, buildStep.options.text, buildStep.options.textSize, buildStep.options.textColor);
           break
         case 'twistedCircleWire':
-          this.twistedCircleWire(buildStep.options.radius, buildStep.options.count, buildStep.options.material, buildStep.options.isolated, buildStep.options.isolationRadius);
+          var radius = this.stepVariables.twistedCircleWire['radius'] ? this.stepVariables.twistedCircleWire['radius'] : buildStep.options.radius;
+          radius = parseFloat(radius);
+          var material = this.stepVariables.twistedCircleWire['material'] ? this.stepVariables.twistedCircleWire['material'] : buildStep.options.material;
+          this.twistedCircleWire(radius, buildStep.options.count, material, buildStep.options.isolated, buildStep.options.isolationRadius);
           break
         case 'twistedCircleWireShield':
           this.twistedCircleWireShield(buildStep.options.radius, buildStep.options.material);

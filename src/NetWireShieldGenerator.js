@@ -24,9 +24,8 @@ class NetWireShieldGenerator {
     var ribbonAdaptiveSpacer = (len - ribbonWidthWithSpacer * ribbonsCount) / (ribbonsCount - 1);
     var singleWireAngleOffset  = ribbonWidth / len * 2 * Math.PI / this.wiresCountPerRibbon;
 
-
     // Угол поворота спирали за единицу длины кабеля
-    var a1 = THREE.Math.degToRad(7);
+    var a1 = THREE.Math.degToRad(35 / this.radius);
     // Кол-во витков спирали за единицу длины кабеля
     var n = this.width * a1 / Math.PI;
     // Радиус спирали
@@ -70,7 +69,7 @@ class NetWireShieldGenerator {
     var rotationDirection = counterCockwise ? 1 : -1;
     wireCenterVector = wireCenterVector.rotateAround(new THREE.Vector2(0, 0), startAngle);
 
-    // Начальная точка для спремления провода
+    // Начальная точка для спрямления провода
     if (counterCockwise) {
       var startVN = wireCenterVector.clone().normalize().multiplyScalar(this.wireRadius);
       var startV = wireCenterVector.clone().add(startVN);
@@ -168,7 +167,7 @@ class NetWireShieldGenerator {
         extrudePath: wireSpline
       };
       var geometry = new THREE.ExtrudeGeometry(circleShape, extrudeSettings);
-      var mesh = new THREE.Mesh(geometry, this.material);
+      var mesh = new THREE.Mesh(geometry, new this.material());
       group.add(mesh);
       angle += singleWireAngleOffset;
     }
@@ -188,13 +187,102 @@ class NetWireShieldGenerator {
     var offset = 0;
     for (var i = 0; i < ribbonsCount; i++) {
       var startAngle = 2 * Math.PI / len * offset;
-      var mesh1 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, true, i);
-      var mesh2 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, false, i);
-      group.add(mesh1);
-      group.add(mesh2);
+      //var mesh1 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, true, i);
+      //var mesh2 = this.generateRibbonMesh(startAngle, singleWireAngleOffset, false, i);
+      //group.add(mesh1);
+      //group.add(mesh2);
+
+      var angle = startAngle;
+      for (var j = 0; j < this.wiresCountPerRibbon; j++) {
+        var mesh3 = this.generateVertexMesh(angle, false, j, i);
+        group.add(mesh3);
+        angle += singleWireAngleOffset;
+      }
+
       offset += ribbonWidthWithSpacer + ribbonAdaptiveSpacer;
     }
+    group.rotateX(-Math.PI * 1.05);
+
     return group;
+  }
+
+  generateVertexMesh(startAngle, counterCockwise, wireIndexInRibbon, ribbonIndex) {
+    var self = this;
+    startAngle = startAngle.toFixed(10);
+    var radius = this.radius + this.wireRadius;
+    radius = radius.toFixed(10);
+
+
+
+    var material = this.material();
+    material.color = new THREE.Color(0xff0000);
+
+    material.userData.radius = radius;
+    material.userData.startAngle = startAngle;
+    material.onBeforeCompile = function ( shader ) {
+
+      shader.uniforms.radius = { value: this.userData.radius };
+      shader.uniforms.startAngle = { value: this.userData.startAngle };
+
+      shader.vertexShader = 'uniform float radius;\n' + shader.vertexShader
+      shader.vertexShader = 'uniform float startAngle;\n' + shader.vertexShader
+
+      shader.vertexShader = `
+
+  vec3 orthogonal(vec3 v) {
+    return normalize(abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0)
+    : vec3(0.0, -v.z, v.y));
+  }
+
+          // Any function can go here to distort p
+          vec3 distorted(vec3 p, float radius, float startAngle) {
+                  // Calculate rotation angle by position x
+                  float currentAngle = startAngle + (-0.6108652382 / radius) * p.x;
+                  // Move wire "radius" distance from center
+                  vec2 v = vec2(.0, radius) + vec2(p.y, p.z);
+                  // Rotate aroud center
+                  float cosA = cos(currentAngle);
+                  float sinA = sin(currentAngle);
+                  mat2 rotationMatrix = mat2(
+                      cosA, -sinA, 
+                      sinA, cosA
+                    );
+                  v = v * rotationMatrix;
+                  vec3 transformed = vec3(p.x, v.x, v.y);
+                  return transformed;
+          }
+      ` + '\n' + shader.vertexShader;
+
+      var replace = `
+          float tangentFactor = 0.01;
+
+    vec3 distortedPosition = distorted(position, radius, startAngle);
+    vec3 tangent1 = orthogonal(normal);
+    vec3 tangent2 = normalize(cross(normal, tangent1));
+    vec3 nearby1 = position + tangent1 * tangentFactor;
+    vec3 nearby2 = position + tangent2 * tangentFactor;
+    vec3 distorted1 = distorted(nearby1, radius, startAngle);
+    vec3 distorted2 = distorted(nearby2, radius, startAngle);
+    vNormal = normalize(cross(distorted1 - distortedPosition, distorted2 - distortedPosition));
+
+          vec3 transformed = distorted(position, radius, startAngle);
+        `;
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', replace);
+
+console.log(shader.vertexShader)        
+
+    };
+
+    // Make sure WebGLRenderer doesnt reuse a single program
+    material.customProgramCacheKey = function () {
+      return ribbonIndex * self.wiresCountPerRibbon + wireIndexInRibbon;
+    };
+
+    var geometry = new THREE.CylinderGeometry(this.wireRadius, this.wireRadius, this.width, 64, 128);
+    geometry.translate(0, -this.width / 2, 0);
+    geometry.rotateZ(Math.PI / 2);
+    var mesh = new THREE.Mesh(geometry, material);
+    return mesh;
   }
 
 }
