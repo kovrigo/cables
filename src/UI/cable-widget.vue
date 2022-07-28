@@ -136,6 +136,24 @@ export default {
   },
 
   methods: {
+    
+    obectiveParams() {
+      var self = this;
+      var sortedReferences = _.sortBy(self.options.references, ['index']);
+      self.selects = _.map(sortedReferences, function (reference) {
+
+        var referenceValueId = _.find(self.options.cable, ['reference_id', reference.id]).reference_value_id;
+        var referenceValue = _.find(reference.values, ['id', referenceValueId]);
+
+        return {
+          label: reference.id,
+          value: referenceValue,
+          values: reference.values,
+
+        };
+      });
+    },
+
     renderCable() {
       var self = this;
 
@@ -190,13 +208,17 @@ export default {
             var z = _.find(self.selects, ['label', y.label]);
             
             var xx = _.find(z.values, ['id', exclude.reference_value_id]);
-
-  
-            _.forEach(self.selects, function(reference) {
-              var q = _.includes(reference.values, xx.id);
-              console.log(q);
-            });
-            y.values.push(xx);  
+            
+            
+            if(z.values.includes(xx)) {
+              console.log("READY");
+            }
+            else {
+              console.log("NOT READY");
+              self.obectiveParams();
+            }
+           // 
+            
            // console.log(self.selects);
              
             
