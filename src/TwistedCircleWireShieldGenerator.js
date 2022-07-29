@@ -46,11 +46,14 @@ class TwistedCircleWireShieldGenerator {
     this.totalRadius = this.radius + adaptiveRadius;
     var mesh;
     var wireGroup = new THREE.Group();
+    var dAngle = 2 * Math.PI / circlesCount;
+    var mesh = this.generateVertexMesh(0, circlesCount, adaptiveRadius);
     for (var i = 0; i < circlesCount; i++) {
       //mesh = this.generateWireMesh(i, circlesCount, adaptiveRadius);
       //wireGroup.add(mesh);      
-      var mesh = this.generateVertexMesh(i, circlesCount, adaptiveRadius);
-      wireGroup.add(mesh);
+      var clonedMesh = mesh.clone();
+      mesh.rotateX(dAngle);
+      wireGroup.add(clonedMesh);
     }
     return wireGroup;
   }

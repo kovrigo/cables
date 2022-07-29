@@ -50,6 +50,7 @@ class GroundWireGenerator {
     var desiredAngle = Math.PI / 4;
     var currentAngle = v.angle();
     var a = desiredAngle - currentAngle;    
+    this.rotation = a;
 
     // Create and position ground wire
     var group = new THREE.Group();
@@ -82,7 +83,7 @@ class GroundWireGenerator {
     mesh.rotateY(Math.PI);
     mesh.position.x = (this.width - goundWireCoverStep) / 2 + goundWireCoverStep;
     mesh.position.y = v.x;
-    mesh.position.z = v.y;    
+    mesh.position.z = v.y;
 
     group.add(mesh);
 

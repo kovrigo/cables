@@ -370,6 +370,12 @@ var options = {
                     "description": "в виде сплошного повива из оцинкованных проволок под наружной оболочкой",
                     "json": [
                         {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 15
+                            }
+                        },                    
+                        {
                             "step": "circleWireCover",
                             "options": {
                                 "radius": 0.01,
@@ -384,7 +390,7 @@ var options = {
                             "options": {
                                 "radius": 0.1,
                                 "countPerRibbon": 5,
-                                "material": "steel"
+                                "material": "plastic"
                             }
                         }
                     ]
@@ -557,7 +563,7 @@ var options = {
         },
         {
             "reference_id": "Индивидуальный экран каждой жилы (пары, тройки, четверки)",
-            "reference_value_id": "без индекса"
+            "reference_value_id": "Эм"
         },
         {
             "reference_id": "Изоляция индивидуальных экранов",

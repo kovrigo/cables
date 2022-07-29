@@ -18,7 +18,10 @@ class CableGenerator {
   currentIntersectionStep = 0;
   currentRadius = 0;
 
+  currentRotation = 0;
+
   objects = [];
+  shaderMeshes = [];
 
   stepVariables = {
     twistedCircleWire: {
@@ -96,8 +99,9 @@ class CableGenerator {
   netWireShield(wireRadius, wiresCountPerRibbon, materialName) {
     var material = this.materials.getMaterialConstructorByCode(materialName);
     //var material = this.materials.getMaterialByCode(materialName);
-    var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, material);
+    var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, material, this.currentRotation);
     var wire = netWireShieldGenerator.generate();
+    this.shaderMeshes = this.shaderMeshes.concat(netWireShieldGenerator.meshes);
     wire.position.set(this.currentIntersectionStep, 0, 0);
     this.currentIntersectionStep += this.intersectionStepLength;
     this.currentRadius = netWireShieldGenerator.totalRadius;
@@ -122,6 +126,12 @@ class CableGenerator {
     var width = this.intersectionStepLength;
     var groundWireGenerator = new GroundWireGenerator(radius, material, coverRadius, this.currentIntersectionStep, this.clonedRadius, this.clonedCount, this.clonedObjects);
     var groundWire = groundWireGenerator.generate();
+
+    this.currentRotation = groundWireGenerator.rotation;
+    console.log(this.currentRotation)
+    this.passUniforms();
+    this.currentRotation = 0;
+
     groundWire.position.set(0, 0, 0);
     this.currentRadius = groundWireGenerator.totalRadius;
     this.objects.push(groundWire);
@@ -160,6 +170,12 @@ class CableGenerator {
 
   setVariable(step, option, value) {
     this.stepVariables[step][option] = value;
+  }
+
+  passUniforms() {
+    for (var i = 0; i < this.shaderMeshes.length; i++) {
+      this.shaderMeshes[i].material.uniforms.rotationAngle.value = this.currentRotation;
+    }
   }
 
   compileScene() {
