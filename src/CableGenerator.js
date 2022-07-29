@@ -128,7 +128,6 @@ class CableGenerator {
     var groundWire = groundWireGenerator.generate();
 
     this.currentRotation = groundWireGenerator.rotation;
-    console.log(this.currentRotation)
     this.passUniforms();
     this.currentRotation = 0;
 

@@ -1,45 +1,35 @@
 import * as THREE from "three";
-import palette from "google-palette";
 
 class Materials {
+
+  colors = {
+    "copper": 0xB87333,
+    "steel": 0xced3d4,
+    "plastic": 0x222222,
+  };
 
   constructor() {
 
   }
 
   getMaterialByCode(code, color = null) {
-    switch(code) {
-      case 'copper':
-        return new THREE.MeshStandardMaterial({
-              metalness: 0.7,
-              roughness: 0.5,
-              color: 0xB87333
-            });
-        break;
-      case 'steel':
-        return new THREE.MeshStandardMaterial({
-              metalness: 0.5,
-              roughness: 0.5,
-              color: 0xced3d4
-            });
-        break;
-      default:
-        return new THREE.MeshPhongMaterial({
-              color: color != null ? color : 0x222222,
-              shininess: 4
-            });
-        break;
-    }
+    var Material = this.getMaterialConstructorByCode(code, color);
+    return new Material;
+  }
+
+  getMaterialColorByCode(code) {
+    return this.colors[code];
   }
 
   getMaterialConstructorByCode(code, color = null) {
+    var self = this;
     switch(code) {
       case 'copper':
         return function () { 
             return new THREE.MeshStandardMaterial({
               metalness: 0.7,
               roughness: 0.5,
-              color: 0xB87333
+              color: self.colors[code],
             });
           };
         break;
@@ -48,14 +38,14 @@ class Materials {
             return new THREE.MeshStandardMaterial({
               metalness: 0.7,
               roughness: 0.5,
-              color: 0xced3d4
+              color: self.colors[code],
             });
           };
         break;
       default:
         return function () { 
             return new THREE.MeshPhongMaterial({
-              color: color != null ? color : 0x222222,
+              color: color != null ? color : self.colors[code],
               shininess: 4
             });
           };      
@@ -65,7 +55,6 @@ class Materials {
 
   getPaletteMaterials(count) {
     var materials = [];
-    //var colors = palette('mpn65', count);
     var colors = [
         '#4682B4', '#FFA500', '#228B22', '#5A2A2A'
       ]

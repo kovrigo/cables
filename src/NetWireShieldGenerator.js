@@ -6,12 +6,12 @@ import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHel
 
 class NetWireShieldGenerator {
 
-  constructor(radius, wireRadius, wiresCountPerRibbon, width, material) {
+  constructor(radius, wireRadius, wiresCountPerRibbon, width, color) {
     this.radius = radius;
     this.wireRadius = wireRadius;
     this.wiresCountPerRibbon = wiresCountPerRibbon;
     this.width = width;
-    this.material = material;
+    this.color = color;
     this.shapeGenerator = new ShapeGenerator;
     this.totalRadius = this.radius + this.wireRadius * 2;
     this.meshes = [];
@@ -169,7 +169,7 @@ class NetWireShieldGenerator {
         extrudePath: wireSpline
       };
       var geometry = new THREE.ExtrudeGeometry(circleShape, extrudeSettings);
-      var mesh = new THREE.Mesh(geometry, new this.material());
+      var mesh = new THREE.Mesh(geometry);
       group.add(mesh);
       angle += singleWireAngleOffset;
     }
@@ -297,7 +297,6 @@ class NetWireShieldGenerator {
     var radius = this.radius + this.wireRadius;
     radius = radius.toFixed(10);
 
-    var material = this.material();
     var shader = {
       uniforms: {
         radius: {value: radius},
@@ -308,7 +307,8 @@ class NetWireShieldGenerator {
         aw: {value: aw},
         aas: {value: a + as},
         currentLen: {value: currentLen},
-        rotationAngle: {value: 0}
+        rotationAngle: {value: 0},
+        tColor: {value: new THREE.Color(this.color)},
       },
       vertexShader: /* glsl */`
         varying vec2 vUv;
@@ -321,6 +321,7 @@ class NetWireShieldGenerator {
         uniform float aas;
         uniform float currentLen;
         uniform float rotationAngle;
+        uniform vec3 tColor;
         varying vec3 vNormal;
 
         vec3 distorted(vec3 p, float radius, float startAngle, float counterClockwise, float cw, float aw, float aas, float currentLen, float wireRadius) {
@@ -366,7 +367,7 @@ class NetWireShieldGenerator {
           vec3 p = b + t * d;
           vec3 n = normalize(a - p);
 
-
+          // Rotate normals
           float cosA = cos(rotationAngle);
           float sinA = sin(rotationAngle);
           mat2 rotationMatrix = mat2(
@@ -377,28 +378,20 @@ class NetWireShieldGenerator {
           n2 = n2 * rotationMatrix;
           n = vec3(n.x, n2.x, n2.y);
 
-
           vNormal = n;
-
-          vec3 objectNormal = vec3( normal );
-          vec3 transformedNormal = objectNormal;
-          transformedNormal = normalMatrix * transformedNormal;
-          //vNormal = transformedNormal;
-
-//vec4 n = modelMatrix * vec4(a - p, 1.0);
-//vNormal = normalize(vec3(n.x, n.y, n.z));
-
         }`,
 
       fragmentShader: /* glsl */`
         varying vec2 vUv;
         varying vec3 vNormal;
+        uniform vec3 tColor;
 
         void main() {
           vec3 light = vec3(10.0, 10.0, 10.0);
           light = normalize(light);
           float dProd = max(0.0, dot(vNormal, light));
-          gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
+          vec3 c = dProd * tColor;
+          gl_FragColor = vec4(c.r, c.g, c.b, 1.0);
         }`
     };
 
