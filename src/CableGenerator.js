@@ -97,9 +97,10 @@ class CableGenerator {
   }
 
   netWireShield(wireRadius, wiresCountPerRibbon, materialName) {
-    var material = this.materials.getMaterialConstructorByCode(materialName);
+    //var material = this.materials.getMaterialConstructorByCode(materialName);
     //var material = this.materials.getMaterialByCode(materialName);
-    var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, material, this.currentRotation);
+    var color = this.materials.getMaterialColorByCode(materialName);
+    var netWireShieldGenerator = new NetWireShieldGenerator(this.currentRadius, wireRadius, wiresCountPerRibbon, this.intersectionStepLength, color, this.currentRotation);
     var wire = netWireShieldGenerator.generate();
     this.shaderMeshes = this.shaderMeshes.concat(netWireShieldGenerator.meshes);
     wire.position.set(this.currentIntersectionStep, 0, 0);

@@ -23,7 +23,7 @@ class SceneCreator {
     //scene.add(pointLight2);
 
     const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-    directionalLight.position.set(10, 10, 10);
+    directionalLight.position.set(100, 100, 100);
     directionalLight.target.position.set(0, 0, 0);
     scene.add(directionalLight);
     scene.add(directionalLight.target);  

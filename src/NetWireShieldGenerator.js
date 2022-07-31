@@ -3,6 +3,9 @@ import { EquiCirclePackings } from "./EquiCirclePackings";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { SceneUtils } from 'three/examples/jsm/utils/SceneUtils';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
+var glsl = require('glslify')
+import netFragmentShader from '!!raw-loader!./shaders/net.frag'; 
+import netVertexShader from '!!raw-loader!./shaders/net.vert'; 
 
 class NetWireShieldGenerator {
 
@@ -221,7 +224,7 @@ class NetWireShieldGenerator {
     var ribbonSpacer = ribbonWidth / 3;
     var ribbonWidthWithSpacer = ribbonWidth + ribbonSpacer;
     var ribbonsCount = Math.floor(len / ribbonWidthWithSpacer);
-    var ribbonAdaptiveSpacer = (len - ribbonWidthWithSpacer * ribbonsCount) / (ribbonsCount - 1);
+    var ribbonAdaptiveSpacer = (len - ribbonWidthWithSpacer * ribbonsCount) / ribbonsCount;
     var singleWireAngleOffset  = ribbonWidth / len * 2 * Math.PI / this.wiresCountPerRibbon;
 
     // Угол поворота спирали за единицу длины кабеля
@@ -262,7 +265,7 @@ class NetWireShieldGenerator {
     // Высота из вершины к основанию
     var cs = bs * Math.sin(lambda) / (2 * Math.cos(lambda));
     // Сторона равнобедренного треугольника
-    var as = cs / Math.sin(lambda);
+    var as = cs / Math.sin(lambda);// + 0.04; // TODO: magic number
 
     var wirePoints = [];
     var wireCenterVector = new THREE.Vector2(0, this.radius + this.wireRadius);
@@ -296,7 +299,6 @@ class NetWireShieldGenerator {
     startAngle = startAngle.toFixed(10);
     var radius = this.radius + this.wireRadius;
     radius = radius.toFixed(10);
-
     var shader = {
       uniforms: {
         radius: {value: radius},
@@ -310,89 +312,8 @@ class NetWireShieldGenerator {
         rotationAngle: {value: 0},
         tColor: {value: new THREE.Color(this.color)},
       },
-      vertexShader: /* glsl */`
-        varying vec2 vUv;
-        uniform float radius;
-        uniform float wireRadius;
-        uniform float startAngle;
-        uniform float counterClockwise;
-        uniform float cw;
-        uniform float aw;
-        uniform float aas;
-        uniform float currentLen;
-        uniform float rotationAngle;
-        uniform vec3 tColor;
-        varying vec3 vNormal;
-
-        vec3 distorted(vec3 p, float radius, float startAngle, float counterClockwise, float cw, float aw, float aas, float currentLen, float wireRadius) {
-          // Calculate rotation angle by position x
-          float currentAngle = startAngle + (counterClockwise * 0.6108652382 / radius) * p.x;
-          // Move wire "radius" distance from center
-          vec2 v = vec2(.0, radius) + vec2(p.y, p.z);
-          // Rotate aroud center
-          float cosA = cos(currentAngle);
-          float sinA = sin(currentAngle);
-          mat2 rotationMatrix = mat2(
-              cosA, -sinA, 
-              sinA, cosA
-            );
-          v = v * rotationMatrix;
-
-          float len = currentLen + position.x / cw * aw;
-          //mod(floor(len / aas / 2.0), 2.0)
-          if (mod(floor(len / aas / 2.0), 2.0) == 0.0) {
-            v = v + normalize(v) * wireRadius;
-          } else {
-            v = v;
-          }
-
-          vec3 transformed = vec3(p.x, v.x, v.y);
-          return transformed;
-        }
-
-        void main() {
-          vUv = uv;
-          vec3 transformedPosition = distorted(position, radius, startAngle, counterClockwise, cw, aw, aas, currentLen, wireRadius);          
-          //gl_Position = projectionMatrix * modelViewMatrix * vec4(transformedPosition, 1.0);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(transformedPosition, 1.0);
-
-          // Recalculate normals
-          float tangentFactor = 0.05;
-          vec3 c = distorted(vec3(position.x - tangentFactor, 0.0, 0.0), radius, startAngle, counterClockwise, cw, aw, aas, currentLen, wireRadius);
-          vec3 b = distorted(vec3(position.x + tangentFactor, 0.0, 0.0), radius, startAngle, counterClockwise, cw, aw, aas, currentLen, wireRadius);
-          vec3 a = distorted(position, radius, startAngle, counterClockwise, cw, aw, aas, currentLen, wireRadius);
-          vec3 d = normalize(c - b);
-          vec3 v = a - b;
-          float t = dot(v, d);
-          vec3 p = b + t * d;
-          vec3 n = normalize(a - p);
-
-          // Rotate normals
-          float cosA = cos(rotationAngle);
-          float sinA = sin(rotationAngle);
-          mat2 rotationMatrix = mat2(
-              cosA, -sinA, 
-              sinA, cosA
-            );
-          vec2 n2 = vec2(n.y, n.z);
-          n2 = n2 * rotationMatrix;
-          n = vec3(n.x, n2.x, n2.y);
-
-          vNormal = n;
-        }`,
-
-      fragmentShader: /* glsl */`
-        varying vec2 vUv;
-        varying vec3 vNormal;
-        uniform vec3 tColor;
-
-        void main() {
-          vec3 light = vec3(10.0, 10.0, 10.0);
-          light = normalize(light);
-          float dProd = max(0.0, dot(vNormal, light));
-          vec3 c = dProd * tColor;
-          gl_FragColor = vec4(c.r, c.g, c.b, 1.0);
-        }`
+      vertexShader: glsl(netVertexShader),
+      fragmentShader: glsl(netFragmentShader)
     };
 
     var shaderMaterial = new THREE.ShaderMaterial({
@@ -401,7 +322,7 @@ class NetWireShieldGenerator {
       fragmentShader: shader.fragmentShader,
     });    
 
-    var geometry = new THREE.CylinderGeometry(this.wireRadius, this.wireRadius, this.width, 64, 128);
+    var geometry = new THREE.CylinderGeometry(this.wireRadius, this.wireRadius, this.width, 64, 512);
     geometry.translate(0, -this.width / 2, 0);
     geometry.rotateZ(Math.PI / 2);
     var mesh = new THREE.Mesh(geometry, shaderMaterial);

@@ -14,7 +14,7 @@ var options = {
                             "options": {
                                 "step": "twistedCircleWire",
                                 "option": "radius",
-                                "value": "0.25"
+                                "value": "1.25"
                             }
                         }
                     ]
@@ -390,7 +390,7 @@ var options = {
                             "options": {
                                 "radius": 0.1,
                                 "countPerRibbon": 5,
-                                "material": "plastic"
+                                "material": "steel"
                             }
                         }
                     ]
@@ -571,7 +571,7 @@ var options = {
         },
         {
             "reference_id": "Наличие жилы заземления",
-            "reference_value_id": "(PE)"
+            "reference_value_id": "без индекса"
         },
         {
             "reference_id": "Общий экран поверх сердечника из всех жил (пар, троек, четверок)",
