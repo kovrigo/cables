@@ -23,6 +23,8 @@ class CableViewer {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
     this.controls.addEventListener('change', function () {
+
+
       renderer.render(scene, camera);
     });
   }
@@ -33,6 +35,7 @@ class CableViewer {
   }
 
   render(cable) {
+
     var cableLength = this.cableGenerator.cableLength();
     this.controls.target.set(cableLength / 3, 0, 0);
     this.controls.update();

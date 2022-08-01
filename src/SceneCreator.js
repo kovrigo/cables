@@ -16,14 +16,14 @@ class SceneCreator {
 
     var pointLight = new THREE.PointLight(0xffffff, 0.3);
     pointLight.position.set(-10, 0, 0);
-    scene.add(pointLight);
+    //scene.add(pointLight);
 
     var pointLight2 = new THREE.PointLight(0xffffff, 0.3);
     pointLight2.position.set(0, -50, 0);
-    scene.add(pointLight2);
+    //scene.add(pointLight2);
 
     const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-    directionalLight.position.set(10, 10, 10);
+    directionalLight.position.set(100, 100, 100);
     directionalLight.target.position.set(0, 0, 0);
     scene.add(directionalLight);
     scene.add(directionalLight.target);  
