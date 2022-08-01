@@ -15,7 +15,9 @@
           <v-select 
           :options="reference.values"
           :clearable="false"
+          :autoscroll="true"
           :searchable="true"
+          :appendToBody="true"
           :selectable="option => true "
           label="description"
           v-model="reference.value"
@@ -307,7 +309,7 @@ export default {
     }
 
     .vs__dropdown-option {
-      white-space: pre-wrap; 
+      white-space: pre-wrap !important; 
       border-top: 1px solid #e0e0e0;
     }
 
