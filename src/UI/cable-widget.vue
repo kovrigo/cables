@@ -17,7 +17,7 @@
           :clearable="false"
           :autoscroll="true"
           :searchable="true"
-          :appendToBody="true"
+
           :selectable="option => true "
           label="description"
           v-model="reference.value"
@@ -299,11 +299,20 @@ export default {
       border-color: transparent;
     }
 
+    .vs--open {
+      z-index: 999;
+    }
     .vs__dropdown-menu { 
       white-space: pre-wrap;
       border: none;
+      position: absolute;
+      z-index: 999;
+      overflow: auto;
     }
-
+    .ul {
+      position: absolute;
+      z-index: 999;
+    }
     .vs__actions {
       padding-right: 15px;
     }
