@@ -14,21 +14,21 @@ var options = {
                             "options": {
                                 "step": "twistedCircleWire",
                                 "option": "radius",
-                                "value": "1.25"
+                                "value": "0.25"
                             }
                         }
                     ]
                 },
                 {
-                    "id": "1.5",
-                    "description": "Жила сечением 1,5 мм²",
+                    "id": "0.5",
+                    "description": "Жила сечением 0,5 мм²",
                     "json": [
                         {
                             "step": "setVariable",
                             "options": {
                                 "step": "twistedCircleWire",
                                 "option": "radius",
-                                "value": "0.69"
+                                "value": "0.4"
                             }
                         }
                     ]
@@ -158,7 +158,7 @@ var options = {
                         {
                             "step": "setStep",
                             "options": {
-                                "newStep": 3
+                                "newStep": "3"
                             }
                         },
                         {
@@ -194,15 +194,157 @@ var options = {
                         {
                             "step": "setStep",
                             "options": {
-                                "newStep": 5
+                                "newStep": 3
                             }
                         },
                         {
                             "step": "netWireShield",
                             "options": {
                                 "radius": 0.05,
-                                "countPerRibbon": 4,
+                                "countPerRibbon": 5,
                                 "material": "copper"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "Эл",
+                    "description": "оплетка из медных луженных проволок",
+                    "json": [
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.01,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "netWireShield",
+                            "options": {
+                                "radius": 0.05,
+                                "countPerRibbon": 5,
+                                "material": "steel"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "ЭЭл",
+                    "description": "поверх алюмофлекса наложена оплетка из медных луженых проволок",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 0.2
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.2,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 1
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.05,
+                                "material": "steel",
+                                "color": "#000000",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.01,
+                                "material": "steel",
+                                "color": "#333333",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "netWireShield",
+                            "options": {
+                                "radius": 0.05,
+                                "countPerRibbon": 5,
+                                "material": "copper"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "Эмф",
+                    "description": "меднофольгированная пленка",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 0.2
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.2,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.05,
+                                "material": "copper",
+                                "color": "#000000",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
                             }
                         },
                         {
@@ -223,14 +365,24 @@ var options = {
                     "description": "экраны изолированы между собой полимерной пленкой",
                     "json": [
                         {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 2
+                            }
+                        },
+                        {
                             "step": "circleWireCover",
                             "options": {
                                 "radius": 0.15,
                                 "material": "plastic",
-                                "color": "#16A5A5",
+                                "color": "#0C797D",
                                 "alignWithNextLayer": null,
                                 "textColor": "#FFFFFF"
                             }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
                         }
                     ]
                 },
@@ -238,6 +390,12 @@ var options = {
                     "id": "С",
                     "description": "экраны изолированы между собой экструдированным полимерным слоем",
                     "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 2
+                            }
+                        },
                         {
                             "step": "circleWireCover",
                             "options": {
@@ -247,6 +405,10 @@ var options = {
                                 "alignWithNextLayer": null,
                                 "textColor": "#FFFFFF"
                             }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
                         }
                     ]
                 }
@@ -338,11 +500,177 @@ var options = {
                             }
                         },
                         {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "Эм",
+                    "description": "оплетка из медных проволок",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": "3"
+                            }
+                        },
+                        {
                             "step": "circleWireCover",
                             "options": {
-                                "radius": 0.5,
+                                "radius": 0.01,
                                 "material": "plastic",
                                 "color": "#333333",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "netWireShield",
+                            "options": {
+                                "radius": 0.05,
+                                "countPerRibbon": 5,
+                                "material": "copper"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "Эл",
+                    "description": "оплетка из медных луженных проволок",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.01,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "netWireShield",
+                            "options": {
+                                "radius": 0.05,
+                                "countPerRibbon": 5,
+                                "material": "steel"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "ЭЭл",
+                    "description": "поверх алюмофлекса наложена оплетка из медных луженых проволок",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 0.2
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.2,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 1
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.05,
+                                "material": "steel",
+                                "color": "#000000",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.01,
+                                "material": "steel",
+                                "color": "#000000",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "netWireShield",
+                            "options": {
+                                "radius": 0.05,
+                                "countPerRibbon": 5,
+                                "material": "copper"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        }
+                    ]
+                },
+                {
+                    "id": "Эмф",
+                    "description": "меднофольгированная пленка",
+                    "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 0.2
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.2,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 3
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.05,
+                                "material": "copper",
+                                "color": "#000000",
                                 "alignWithNextLayer": null,
                                 "textColor": "#FFFFFF"
                             }
@@ -372,9 +700,23 @@ var options = {
                         {
                             "step": "setStep",
                             "options": {
-                                "newStep": 15
+                                "newStep": 1
                             }
-                        },                    
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.3,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        },
                         {
                             "step": "circleWireCover",
                             "options": {
@@ -400,9 +742,15 @@ var options = {
                     "description": "в виде оплетки из оцинкованных проволок под наружной оболочкой",
                     "json": [
                         {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 1
+                            }
+                        },
+                        {
                             "step": "circleWireCover",
                             "options": {
-                                "radius": 0.01,
+                                "radius": 0.3,
                                 "material": "plastic",
                                 "color": "#333333",
                                 "alignWithNextLayer": null,
@@ -410,9 +758,23 @@ var options = {
                             }
                         },
                         {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.01,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": true,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        },
+                        {
                             "step": "twistedCircleWireShield",
                             "options": {
-                                "radius": 0.1,
+                                "radius": 0.15,
                                 "material": "steel"
                             }
                         }
@@ -422,6 +784,26 @@ var options = {
                     "id": "Б",
                     "description": "ленточная из стальных оцинкованных лент",
                     "json": [
+                        {
+                            "step": "setStep",
+                            "options": {
+                                "newStep": 1
+                            }
+                        },
+                        {
+                            "step": "circleWireCover",
+                            "options": {
+                                "radius": 0.3,
+                                "material": "plastic",
+                                "color": "#333333",
+                                "alignWithNextLayer": null,
+                                "textColor": "#FFFFFF"
+                            }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
+                        },
                         {
                             "step": "circleWireCover",
                             "options": {
@@ -435,9 +817,13 @@ var options = {
                         {
                             "step": "ribbon",
                             "options": {
-                                "thickness": 0.15,
+                                "thickness": 0.1,
                                 "material": "steel"
                             }
+                        },
+                        {
+                            "step": "setDefaultStep",
+                            "options": []
                         }
                     ]
                 }
@@ -547,7 +933,28 @@ var options = {
             ]
         }
     ],
-    "exceptions": [],
+    "exceptions": [
+        {
+            "reference_id": "Число жил (пар, троек, четверок)",
+            "reference_value_id": "10х2",
+            "exclude": [
+                {
+                    "reference_id": "Номинальное сечение жилы",
+                    "reference_value_id": "0.5"
+                }
+            ]
+        },
+        {
+            "reference_id": "Число жил (пар, троек, четверок)",
+            "reference_value_id": "5х4",
+            "exclude": [
+                {
+                    "reference_id": "Номинальное сечение жилы",
+                    "reference_value_id": "0,2"
+                }
+            ]
+        }
+    ],
     "cable": [
         {
             "reference_id": "Номинальное сечение жилы",
@@ -559,15 +966,15 @@ var options = {
         },
         {
             "reference_id": "Число жил (пар, троек, четверок)",
-            "reference_value_id": "5х4"
+            "reference_value_id": "10х2"
         },
         {
             "reference_id": "Индивидуальный экран каждой жилы (пары, тройки, четверки)",
-            "reference_value_id": "Эм"
+            "reference_value_id": "Эмф"
         },
         {
             "reference_id": "Изоляция индивидуальных экранов",
-            "reference_value_id": "С"
+            "reference_value_id": "П"
         },
         {
             "reference_id": "Наличие жилы заземления",
@@ -575,15 +982,15 @@ var options = {
         },
         {
             "reference_id": "Общий экран поверх сердечника из всех жил (пар, троек, четверок)",
-            "reference_value_id": "без индекса"
+            "reference_value_id": "Эм"
         },
         {
             "reference_id": "Броня под наружной оболочкой",
-            "reference_value_id": "К"
+            "reference_value_id": "без индекса"
         },
         {
             "reference_id": "Материал оболочки и изоляции",
-            "reference_value_id": "T"
+            "reference_value_id": "В"
         }
     ]
 }

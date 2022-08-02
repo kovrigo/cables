@@ -11,9 +11,9 @@
       <!-- Selects -->
       <div class="ui-box" v-if="loaded">
         <div class="ui-select" v-for="reference in selects" :key="reference.label">          
-          <span>{{ reference.label + ": " + "[" + reference.value.id + "]" }}</span>
+          <span>{{ reference.id + ": " + "[" + reference.value.id + "]" }}</span>
           <v-select 
-          :options="reference.values"
+          :options="filterOptions(reference)"
           :clearable="false"
           :searchable="true"
           :selectable="option => true "
@@ -60,7 +60,7 @@ export default {
       handler: function (value) {
         this.cable = _.map(value, function (reference) {
           return {
-            reference_id: reference.label,
+            reference_id: reference.id,
             reference_value_id: reference.value.id,
           };
         });
@@ -86,7 +86,7 @@ export default {
       var referenceValueId = _.find(self.options.cable, ['reference_id', reference.id]).reference_value_id;
       var referenceValue = _.find(reference.values, ['id', referenceValueId]);
       return {
-        label: reference.id,
+        id: reference.id,
         value: referenceValue,
         values: reference.values,
       };
@@ -95,7 +95,51 @@ export default {
   },
 
   methods: {
+
+    filterOptions(reference) {
+      var self = this;
+      var filtered = _.find(this.options.references, ['id', reference.id]).values;
+      // Цикл по исключениям
+      _.forEach(this.options.exceptions, function (exception) {
+        // Цикл по исключаемым индексам
+        _.forEach(exception.exclude, function (exclude) {
+          // Если исключается текущий справочник
+          if (exclude.reference_id == reference.id) {
+            // Проверить исключаемый индекс на истинность
+            var excludeReferenceCurrentValue = _.find(self.selects, ['id', exception.reference_id]).value;
+            if (excludeReferenceCurrentValue.id == exception.reference_value_id) {
+              // Отфильтровать исключаемые индексы
+              filtered = _.filter(filtered, function (value) {
+                return value.id != exclude.reference_value_id;
+              });
+            }
+          }
+        });
+      });
+      return filtered;
+    },
+
+    fixExcludedSelects() {
+      var res = false;
+      var self = this;
+      // Цикл по селектам
+      _.forEach(this.selects, function (reference) {
+        var selectedValueFromOptions = _.find(self.filterOptions(reference), ['id', reference.value.id]);
+        // Если выбранного значения нет в отфильтрованном списке значений
+        if (!selectedValueFromOptions) {
+          // Выбрать первое доступное значение
+          res = true;
+          reference.value = self.filterOptions(reference)[0];
+        }
+      });
+      return res;
+    },
+
     renderCable() {
+      var needsFiltering = this.fixExcludedSelects();
+      if (needsFiltering) {
+        return;
+      }
       var self = this;
       // Sort cable building steps by reference generator index
       var buildSteps = _.sortBy(this.cable, function (step) {
@@ -114,11 +158,11 @@ export default {
         window.cableViewer.render(cable);
         this.isLoaderVisible = false; // Loader stop
       }, 1);
-
     },
+
     onSelected: function(reference, option) {
       //var x = this.selects;
-      console.log(this.selects);
+      //console.log(this.selects);
     },
   },
 

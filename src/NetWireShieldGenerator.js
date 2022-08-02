@@ -322,7 +322,7 @@ class NetWireShieldGenerator {
       fragmentShader: shader.fragmentShader,
     });    
 
-    var geometry = new THREE.CylinderGeometry(this.wireRadius, this.wireRadius, this.width, 64, 512);
+    var geometry = new THREE.CylinderGeometry(this.wireRadius, this.wireRadius, this.width, 64, 128);
     geometry.translate(0, -this.width / 2, 0);
     geometry.rotateZ(Math.PI / 2);
     var mesh = new THREE.Mesh(geometry, shaderMaterial);
