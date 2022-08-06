@@ -11,15 +11,14 @@
       <!-- Selects -->
       <div class="ui-box" v-if="loaded">
         <div class="ui-select" v-for="reference in selects" :key="reference.label">          
-          <span>{{ reference.id + ": " + "[" + reference.value.id + "]" }}</span>
+          <span>{{ reference.id + ":" }}</span>
           <v-select 
           :options="filterOptions(reference)"
           :clearable="false"
           :searchable="true"
-          :selectable="option => true "
+          appendToBody="true"
           label="description"
           v-model="reference.value"
-          @option:selected="onSelected"
           >
             <template #no-options="{ search, searching, loading }">Ничего не найдено</template>
           </v-select>
@@ -160,10 +159,6 @@ export default {
       }, 1);
     },
 
-    onSelected: function(reference, option) {
-      //var x = this.selects;
-      //console.log(this.selects);
-    },
   },
 
 }
@@ -174,20 +169,38 @@ export default {
   $ui-main-color: #019F8C;
   $ui-sec-color: #F7F7F7;
 
+  body {
+    .vs__dropdown-menu { 
+      white-space: pre-wrap;
+      border: none;
+    }
+    .vs__dropdown-option {
+      white-space: pre-wrap; 
+      border-top: 0.5px solid #ececec;
+    }
+
+    .vs__dropdown-option--selected {
+      background: #e9e9e9;
+    }
+    .vs__dropdown-option--highlight {
+      background: $ui-main-color;
+    }
+    .vs__dropdown-menu {
+      &::-webkit-scrollbar {width: 5px;}
+      &::-webkit-scrollbar-thumb {background: $ui-main-color;border-radius: 25px;}
+      &::-webkit-scrollbar-track {background-color: $ui-sec-color;border-radius: 25px;}
+    }
+  }
   .cable-widget {
     display: flex;
     left: 10px;
     right: 10px;
     width: 850px;
     height: auto;
-    border: 1px solid rgb(63, 63, 63);
-    border-radius: 0px;
-    box-shadow: 5px 5px 5px rgba(61, 61, 61, 0.438);
     z-index: 1;
     overflow: hidden;
 
-    .ui, 
-    .vs__dropdown-menu {
+    .ui {
       &::-webkit-scrollbar {width: 5px;}
       &::-webkit-scrollbar-thumb {background: $ui-main-color;border-radius: 25px;}
       &::-webkit-scrollbar-track {background-color: $ui-sec-color;border-radius: 25px;}
@@ -205,7 +218,6 @@ export default {
       width: 350px;
       overflow: auto;
       height: 500px;
-      //background-color: $ui-bg-color;
     }
 
     .ui-box {
@@ -234,27 +246,10 @@ export default {
       border-color: transparent;
     }
 
-    .vs__dropdown-menu { 
-      white-space: pre-wrap;
-      border: none;
-    }
-
     .vs__actions {
       padding-right: 15px;
     }
 
-    .vs__dropdown-option {
-      white-space: pre-wrap; 
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .vs__dropdown-option--selected {
-      background: #e9e9e9;
-    }
-    .vs__dropdown-option--highlight {
-      background: $ui-main-color;
-    }
-    
     .progressloaderBox {
       position: absolute;
       top: 10;
