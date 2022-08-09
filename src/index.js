@@ -955,6 +955,8 @@ var options = {
             ]
         }
     ],
+    "full_mode": "false",
+    "thumbnail_url": "https://i.ucrazy.ru/files/pics/2016.12/uporotkotii16.jpg",
     "cable": [
         {
             "reference_id": "Номинальное сечение жилы",

@@ -1,12 +1,18 @@
 <template>
   <div class="cable-widget">
+    <div class="thumbs" >
+      <img id="thumbImg" class="thumbnail" :class="{activeThumbnail: activeThumb === 2}" :src=thumbUrl @click="thumbImg">
+      <img id="thumbCanvas" class="thumbnail" :class="{activeThumbnail: activeThumb === 1}" src="../assets/allcablespro.png" @click="thumbCanvas"> 
+    </div>
     <div class="viewer" ref="viewer">
+      <img id="thumbImg" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbImg">
+      <div class="progressloaderBox" v-if="isLoaderVisible" >
+        <div class="spinner"></div>   
+      </div>
       <!-- 3D canvas goes here -->
     </div>
-    <!-- Progress Bar -->
-    <div class="progressloaderBox" v-if="isLoaderVisible" >
-      <div class="spinner"></div>   
-    </div>
+    
+    
     <div class="ui">
       <!-- Selects -->
       <div class="ui-box" v-if="loaded">
@@ -16,7 +22,7 @@
           :options="filterOptions(reference)"
           :clearable="false"
           :searchable="true"
-          appendToBody="true"
+          :appendToBody="true"
           label="description"
           v-model="reference.value"
           >
@@ -46,7 +52,9 @@ export default {
       selects: null,
       cable: null,
       loaded: false,
+      thumbUrl: null,
       isLoaderVisible: false,
+      isThumbnailOpen: true,
     }
   },
 
@@ -72,12 +80,31 @@ export default {
 
   mounted() {
     var self = this;
+    
+      
+
+    // Apply ImgUrl from Json
+    this.thumbUrl = this.options.thumbnail_url;
+    if (this.thumbUrl === '') {
+      this.activeThumb = 1;
+      this.isThumbnailOpen = false;
+    }
+    if (this.isThumbnailOpen != true) {
+        this.activeThumb = 1;
+      }
+    else {
+      this.activeThumb = 2;
+    }
+
     // Create and initialize cable viewer
     window.cableViewer = new CableViewer(500, function (progress) {
       self.isLoaderVisible = true;
     });
 
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
+    
+    
+ 
     
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
@@ -91,10 +118,18 @@ export default {
       };
     });
     this.loaded = true;
+
   },
 
   methods: {
-
+    thumbImg: function () {
+      this.activeThumb = 2;
+      this.isThumbnailOpen = true;
+    },
+    thumbCanvas: function () {
+      this.activeThumb = 1;
+      this.isThumbnailOpen = false;
+    }, 
     filterOptions(reference) {
       var self = this;
       var filtered = _.find(this.options.references, ['id', reference.id]).values;
@@ -155,6 +190,11 @@ export default {
       setTimeout(() => {
         var cable = window.cableViewer.newCableFromJson(cableDescription);
         window.cableViewer.render(cable);
+        // Append canvas to thumbnail
+        if (this.thumbUrl === '') {
+          thumbImg.src = window.cableViewer.canvas.toDataURL();
+        }
+        thumbCanvas.src = window.cableViewer.canvas.toDataURL();
         this.isLoaderVisible = false; // Loader stop
       }, 1);
     },
@@ -195,12 +235,41 @@ export default {
     display: flex;
     left: 10px;
     right: 10px;
-    width: 850px;
+    width: 100%;
     height: auto;
+    border: 2px solid black;
     z-index: 1;
     overflow: hidden;
-
-    .ui {
+  
+    .thumbnailOpen {
+      width: 500px;
+      height: 500px;
+      object-fit: cover;
+    }
+    .thumbs {
+      display: flex;
+      flex-direction: column;
+      border: none;
+      height: 500px;
+      //width: 200px;
+      //overflow: auto;
+    }
+    .thumbnail {
+      display: flex;
+      margin: 5px 5px 5px 5px;
+      width: 128px;
+      height: 128px;
+      border: 2px solid rgb(176, 176, 176); 
+      object-fit: cover;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .activeThumbnail {
+      border: 2px solid $ui-main-color;
+    }
+    .ui,
+    .thumbs {
       &::-webkit-scrollbar {width: 5px;}
       &::-webkit-scrollbar-thumb {background: $ui-main-color;border-radius: 25px;}
       &::-webkit-scrollbar-track {background-color: $ui-sec-color;border-radius: 25px;}
@@ -208,14 +277,19 @@ export default {
     .viewer {
       position: relative;
       top: 0;
-      border-radius: 20px;
+      //border: 2px solid black;
+      border-radius: 0px;
       width: 500px;
+      height: 500px;
+    }
+    .viewer canvas {
+      position: relative !important;
     }
 
     .ui {
       position: relative;
       top: 0;      
-      width: 350px;
+      width: 50%;
       overflow: auto;
       height: 500px;
     }
