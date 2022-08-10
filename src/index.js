@@ -1,4 +1,7 @@
 var options = {
+    "full_mode": "true", // Переключение между полным (горизонтальным) вариантом виджета и упрощенным (вертикальным)
+    "widget_easymode_size": "400px", // Определяет высоту и ширину блока выподающих списков и блока конструктора (только в упрощенном варианте)
+    "thumbnail_url": "https://i.ucrazy.ru/files/pics/2016.12/uporotkotii16.jpg", // Ссылка на картинку кабеля для левой панели табунации
     "references": [
         {
             "id": "Номинальное сечение жилы",
@@ -955,8 +958,6 @@ var options = {
             ]
         }
     ],
-    "full_mode": "false",
-    "thumbnail_url": "https://i.ucrazy.ru/files/pics/2016.12/uporotkotii16.jpg",
     "cable": [
         {
             "reference_id": "Номинальное сечение жилы",
