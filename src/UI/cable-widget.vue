@@ -105,18 +105,14 @@ export default {
   mounted() {
     var self = this;
   
-    // Initialize full mode
-    if (this.options.full_mode === "true") {
-      this.isFullMode = true;
-    }
-    else {
-      this.isFullMode = false;
-    }
+    // Initialize Full\Easy Mode 
+    if (this.options.full_mode === "true") {this.isFullMode = true;}
+    else {this.isFullMode = false;}
+
     // Create and initialize cable viewer
     window.cableViewer = new CableViewer(500, function (progress) {
       self.isLoaderVisible = true;
     });
-
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
 
     // Make Active Thumbs from Json
@@ -127,17 +123,15 @@ export default {
         this.activeThumb = 2;
         this.isThumbnailOpen = false;
       }
-      // Загрузка картинки перед рендером кабеля (если картинка есть)
+      // Loading a picture before rendering the cable (if there is a picture)
       else { this.thumbUrl = this.options.thumbnail_url; this.isImgLoaderVisible = false; }
       if (this.isThumbnailOpen != true) { this.activeThumb = 1; }
       else { this.activeThumb = 2; }
     }
-    else {
-      this.isThumbnailOpen = false;
-    }
+    else {this.isThumbnailOpen = false;}
     
+    // Resize Widget in Easy Mode from Json
     var widgetEasymodeSize = this.options.widget_easymode_size;
-    console.log(widgetEasymodeSize);
     document.body.style.setProperty('--widget_easymode_size', widgetEasymodeSize)
     
     // Generate selects with values
@@ -219,7 +213,7 @@ export default {
         var cable = window.cableViewer.newCableFromJson(cableDescription);
         window.cableViewer.render(cable);
        
-        // Apply ImgUrl from Json
+        // Apply Image Thumbnail URL from Json
         if (this.isFullMode === true) {
           if (this.options.thumbnail_url === '') {
           this.thumbUrl = window.cableViewer.canvas.toDataURL();
@@ -228,7 +222,7 @@ export default {
           {
             this.thumbUrl = this.options.thumbnail_url;
           }
-          // Append canvas to thumbnail
+          // Append canvas to cable viewer thumbnail
           thumbCanvas.src = window.cableViewer.canvas.toDataURL();
         }
 
@@ -237,16 +231,19 @@ export default {
       }, 1);
     },
 
+    // Image Thumbnail click
     thumbImg: function () {
       this.activeThumb = 2;
       this.isThumbnailOpen = true;
     },
 
+    // Cable Viewer Thumbnail click
     thumbCanvas: function () {
       this.activeThumb = 1;
       this.isThumbnailOpen = false;
     }, 
 
+    // Open Thumbnail click
     thumbOpen: function() {
       
     },
@@ -291,8 +288,8 @@ export default {
   }
   .cableWidgetEasyMode {
     width: $widget-easymode-size !important;
-    background-color: $ui-easymode-bg-color;
-    flex-direction: column;
+    background-color: $ui-easymode-bg-color !important;
+    flex-direction: column !important;
 
     .uiEasyMode {
       width: 100% !important;
