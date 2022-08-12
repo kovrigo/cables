@@ -25,11 +25,13 @@
     </div>
 
     <div class="viewer" :class="{viewerEasyMode: isFullMode != true}" ref="viewer">
-      <img id="thumbOpen" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbOpen">
-      
+
       <div class="progressloaderBox" v-if="isLoaderVisible" >
         <div class="spinner"></div>   
       </div>
+
+      <img id="thumbOpen" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbOpen">
+      
       <!-- 3D canvas goes here -->
       <button class="btn-minimize-maximize" v-if="isFullMode != true" @click="uiAllowShow = !uiAllowShow;">
         <svg v-if="uiAllowShow" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16">
@@ -108,7 +110,6 @@ export default {
         }
         return 'Показать параметры'
       }
-      
     }
   },
 
@@ -167,7 +168,6 @@ export default {
     document.body.style.setProperty('--widget-border-type', this.options.widget_border_type)
     document.body.style.setProperty('--widget-border-color', this.options.widget_border_color)
     document.body.style.setProperty('--widget-border-radius', this.options.widget_border_radius)
-    
 
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
@@ -254,6 +254,7 @@ export default {
             // Do this only once
             if (this.isFirstRun === true) {
               this.thumbUrl = window.cableViewer.canvas.toDataURL();
+              
               this.isFirstRun = false;
             }
           }
@@ -264,6 +265,7 @@ export default {
 
         this.isLoaderVisible = false; // Loader stop
         this.isImgLoaderVisible = false; // Loader stop
+
       }, 1);
     },
 
@@ -576,7 +578,7 @@ export default {
       width: 50px;
       height: 50px;
       border: 3px solid $ui-sec-color;;
-      border-top: 3.6px solid $ui-main-color;
+      border-top: 3px solid $ui-main-color;
       border-radius: 100%;
       animation: spin 1s infinite linear;
     }
