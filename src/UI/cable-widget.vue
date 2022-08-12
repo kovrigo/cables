@@ -26,31 +26,43 @@
 
     <div class="viewer" :class="{viewerEasyMode: isFullMode != true}" ref="viewer">
       <img id="thumbOpen" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbOpen">
+      
       <div class="progressloaderBox" v-if="isLoaderVisible" >
         <div class="spinner"></div>   
       </div>
       <!-- 3D canvas goes here -->
+      <button class="btn-minimize-maximize" v-if="isFullMode != true" @click="uiAllowShow = !uiAllowShow;">
+        <svg v-if="uiAllowShow" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm5.354.854a.502.502 0 0 1-.708-.708l2-2a.502.502 0 0 1 .708 0l2 2a.502.502 0 0 1-.708.708L8 7.207 6.354 8.854Z"/>
+        </svg>
+        <svg v-if="!uiAllowShow" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm5.353-.854a.5.5 0 1 0-.706.708l2 2a.5.5 0 0 0 .706 0l2-2a.5.5 0 1 0-.706-.708L8 8.793 6.353 7.146Z"/>
+        </svg>
+        {{ btnMinMaxText }}
+      </button>
     </div>   
-    
-    <div class="ui" :class="{uiEasyMode: isFullMode != true}">
-      <!-- Selects -->
-      <div class="ui-box" v-if="loaded">
-        <div class="ui-select" v-for="reference in selects" :key="reference.label">          
-          <span>{{ reference.id + ":"}}</span>
-          <v-select 
-          :options="filterOptions(reference)"
-          :clearable="false"
-          :searchable="true"
-          :appendToBody="true"
-          label="description"
-          v-model="reference.value"
-          >
-            <template #no-options="{ search, searching, loading }">Ничего не найдено</template>
-          </v-select>
-        </div> 
+    <transition name="slide" appear>
+      <div class="ui" :class="{uiEasyMode: isFullMode != true}" v-if="uiAllowShow">
+        <!-- Selects -->
+        <div class="ui-box" v-if="loaded">
+          <div class="ui-select" v-for="reference in selects" :key="reference.label">          
+            <span>{{ reference.id + ":"}}</span>
+            <v-select 
+            :options="filterOptions(reference)"
+            :clearable="false"
+            :searchable="true"
+            :appendToBody="true"
+            label="description"
+            v-model="reference.value"
+            >
+              <template #no-options="{ search, searching, loading }">Ничего не найдено</template>
+            </v-select>
+          </div> 
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
+  
 </template>
 
 <script>
@@ -77,11 +89,27 @@ export default {
       isImgLoaderVisible: false,
       loaderLogo: "../src/assets/allcablespro.png",
       isFullMode: true,
+      uiAllowShow: false,
+      isFirstRun: true,
     }
   },
 
   computed: {
-
+    btnMinMaxText: function() {
+      if (this.options.widget_easymode_size <= "250px" && this.options.widget_easymode_size > "150px") {
+        return 'Параметры'
+      }
+      else if (this.options.widget_easymode_size <= "150px") {
+        return ''
+      }
+      else {
+        if(this.uiAllowShow) {
+        return 'Скрыть параметры'
+        }
+        return 'Показать параметры'
+      }
+      
+    }
   },
 
   watch: {
@@ -105,13 +133,11 @@ export default {
     var self = this;
   
     // Initialize Full\Easy Mode 
-    if (this.options.full_mode === "true") {this.isFullMode = true;}
+    if (this.options.full_mode === "true") {this.isFullMode = true; this.uiAllowShow = true}
     else {this.isFullMode = false;}
 
     // Create and initialize cable viewer
-    window.cableViewer = new CableViewer(500, function (progress) {
-      self.isLoaderVisible = true;
-    });
+    window.cableViewer = new CableViewer(500, function (progress) {self.isLoaderVisible = true;});
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
 
     // Make Active Thumbs from Json
@@ -123,16 +149,26 @@ export default {
         this.isThumbnailOpen = false;
       }
       // Loading a picture before rendering the cable (if there is a picture)
-      else { this.thumbUrl = this.options.thumbnail_url; this.isImgLoaderVisible = false; }
+      else { this.thumbUrl = this.options.thumbnail_url;  }
       if (this.isThumbnailOpen != true) { this.activeThumb = 1; }
       else { this.activeThumb = 2; }
     }
     else {this.isThumbnailOpen = false;}
     
     // Resize Widget in Easy Mode from Json
-    var widgetEasymodeSize = this.options.widget_easymode_size;
-    document.body.style.setProperty('--widget_easymode_size', widgetEasymodeSize)
+    document.body.style.setProperty('--widget_easymode_size', this.options.widget_easymode_size)
+    // Set Widget Background Color in Easy Mode from Json
+    document.body.style.setProperty('--widget_easymode_bg_color', this.options.widget_easymode_bg_color)
+    // Set Widget UI Colors from Json
+    document.body.style.setProperty('--widget-ui-main-color', this.options.widget_ui_main_color)
+    document.body.style.setProperty('--widget-ui-second-color', this.options.widget_ui_second_color)
+    // Set Widget Border Settings from Json
+    document.body.style.setProperty('--widget-border-size', this.options.widget_border_size)
+    document.body.style.setProperty('--widget-border-type', this.options.widget_border_type)
+    document.body.style.setProperty('--widget-border-color', this.options.widget_border_color)
+    document.body.style.setProperty('--widget-border-radius', this.options.widget_border_radius)
     
+
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
@@ -214,7 +250,13 @@ export default {
        
         // Apply Image Thumbnail URL from Json
         if (this.isFullMode === true) {
-          if (this.options.thumbnail_url === '') {this.thumbUrl = window.cableViewer.canvas.toDataURL();}
+          if (this.options.thumbnail_url === '') {
+            // Do this only once
+            if (this.isFirstRun === true) {
+              this.thumbUrl = window.cableViewer.canvas.toDataURL();
+              this.isFirstRun = false;
+            }
+          }
           else {this.thumbUrl = this.options.thumbnail_url;}
           // Append canvas to cable viewer thumbnail
           thumbCanvas.src = window.cableViewer.canvas.toDataURL();
@@ -248,22 +290,34 @@ export default {
 </script>
 
 <style lang="scss">
-  $ui-bg-color: #28F0C5;
-  $ui-main-color: #019F8C;
-  $ui-sec-color: #F7F7F7;
-  $ui-easymode-bg-color: #eaeaea;
+
+  $ui-main-color: var(--widget-ui-main-color);
+  $ui-sec-color: var(--widget-ui-second-color);
+  $widget-easymode-bg-color: var(--widget_easymode_bg_color);
   $widget-easymode-size: var(--widget_easymode_size);
   
   :root{
     --widget_easymode_size: 500px;
+    --widget_easymode_bg_color: #eaeaea;
+    --widget-ui-main-color: #019F8C;
+    --widget-ui-second-color: #F7F7F7;
+
+    --widget-border-size: 1px;
+    --widget-border-type: solid;
+    --widget-border-color: #000000;
+    --widget-border-radius: 10px;
+
+    --ui-select-span-f-size: small;
   }
 
   body {
+    /* appendToBody Selects Restyle */
     .vs__dropdown-menu { 
       white-space: pre-wrap;
       border: none;
     }
     .vs__dropdown-option {
+      font-size: var(--ui-select-span-f-size);
       white-space: pre-wrap; 
       border-top: 0.5px solid #ececec;
     }
@@ -279,10 +333,12 @@ export default {
       &::-webkit-scrollbar-thumb {background: $ui-main-color;border-radius: 25px;}
       &::-webkit-scrollbar-track {background-color: $ui-sec-color;border-radius: 25px;}
     }
+    /* appendToBody Selects Restyle */
   }
+  /* EasyMode Widget */
   .cableWidgetEasyMode {
     width: $widget-easymode-size !important;
-    background-color: $ui-easymode-bg-color !important;
+    background-color: $widget-easymode-bg-color !important;
     flex-direction: column !important;
 
     .uiEasyMode {
@@ -300,6 +356,8 @@ export default {
       height: $widget-easymode-size !important;
     }
   }
+  /* EasyMode Widget */
+  /* Main Widget */
   .cable-widget {
     display: flex;
     flex-direction: row;
@@ -307,21 +365,61 @@ export default {
     right: 10px;
     width: 1000px;
     height: auto;
-    border: 1px solid black;
+    border: var(--widget-border-size) var(--widget-border-type) var(--widget-border-color);
+    border-radius: var(--widget-border-radius);
     z-index: 1;
     overflow: hidden;
-  
-    .thumbs-up-icon {
+
+    /* Minimize\Maximize UI Button */
+    .btn-minimize-maximize {
       position: absolute;
-      left: 4px;
-      top: 4px;
+      right: 0;
+      bottom: 0;
+      margin: 0 10px 10px 0;
+      padding: 6px 12px 6px 12px;
+      background-color: $ui-sec-color;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 5;
     }
 
-    .thumbnailOpen {
-      width: 500px;
-      height: 500px;
-      object-fit: cover;
+    .btn-minimize-maximize svg {
+      display: inline-block;
+      vertical-align: middle;
+      fill: $ui-main-color;
+      width: 16px;
+      height: 16px;
+      margin-right: 0.25rem;
     }
+
+    .btn-minimize-maximize:hover svg {
+      fill: #fff;
+    }
+
+    .btn-minimize-maximize:focus svg,
+    .btn-minimize-maximize:focus-visible svg
+     {
+      fill: #fff;
+    }
+
+    .btn-minimize-maximize:hover {
+      background-color: $ui-main-color;
+      color: white;
+      cursor: pointer;
+    }
+
+    .btn-minimize-maximize:focus, 
+    .btn-minimize-maximize:focus-visible {
+      border: none;
+      background-color: $ui-main-color;
+      color: white;
+      cursor: pointer;
+      outline: none;
+    }
+    /* Minimize\Maximize UI Button */
+    /* Thumbnails Tabs */
+    
     .thumbs {
       display: flex;
       flex-direction: column;
@@ -330,6 +428,7 @@ export default {
       //width: 200px;
       //overflow: auto;
     }
+
     .thumbnail {
       display: flex;
       position: relative;
@@ -342,9 +441,11 @@ export default {
       align-items: center;
       cursor: pointer;
     }
+
     .activeThumbnail {
       border: 2px solid $ui-main-color;
     }
+
     .thumbnail img {
       display: flex;
       margin: 5px 5px 5px 5px;
@@ -352,30 +453,49 @@ export default {
       height: 128px;
       object-fit: cover;
     }
-    .ui,
-    .thumbs {
+
+    .thumbs-up-icon {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+    }
+
+    .thumbnailOpen {
+      width: 500px;
+      height: 500px;
+      object-fit: cover;
+    }
+    /* Thumbnails Tabs */
+    /* Scrollbar UI */
+    .ui {
       &::-webkit-scrollbar {width: 5px;}
       &::-webkit-scrollbar-thumb {background: $ui-main-color;border-radius: 25px;}
       &::-webkit-scrollbar-track {background-color: transparent;border-radius: 25px;}
     }
+    /* Scrollbar UI */
+    /* Cable Viewer */
     .viewer {
       position: relative;
       top: 0;
-      //border: 2px solid black;
       border-radius: 0px;
       width: 500px;
       height: 500px;
+      z-index: 4;
     }
+
     .viewer canvas {
       position: relative !important;
     }
-
+    /* Cable Viewer */
+    /* UI Box */
     .ui {
       position: relative;
       top: 0;      
       width: 50%;
       overflow: auto;
+      overflow-x: hidden;
       height: 500px;
+      z-index: 1;
     }
 
     .ui-box {
@@ -386,10 +506,14 @@ export default {
       margin-bottom: 15px;
     }
 
+    /* UI Box */
+    /* Selects */
     .ui-select {
       position: flex;
     }
-
+    .ui-select span {
+      font-size: var(--ui-select-span-f-size);
+    }
     .vs__search {
       position: absolute;
     }
@@ -405,7 +529,7 @@ export default {
     }
     
     .vs__dropdown-toggle {
-      margin: 0.3em 0 1.3em 0;
+      margin: 0.3em 0 1em 0;
       height: auto;
       text-overflow: ellipsis;
       border-radius: 2px;
@@ -415,7 +539,8 @@ export default {
     .vs__actions {
       padding-right: 15px;
     }
-
+    /* Selects */
+    /* PreLoader */
     .progressloaderBox {
       position: absolute;
       top: 10;
@@ -436,7 +561,7 @@ export default {
       width: 80px;
       height: 80px;
       border: 4px solid $ui-sec-color;;
-      border-top: 4px solid $ui-main-color;
+      border-top: 4.1px solid $ui-main-color;
       border-radius: 100%;
       animation: spin 1s infinite linear;
     }
@@ -451,15 +576,36 @@ export default {
       width: 50px;
       height: 50px;
       border: 3px solid $ui-sec-color;;
-      border-top: 3px solid $ui-main-color;
+      border-top: 3.6px solid $ui-main-color;
       border-radius: 100%;
       animation: spin 1s infinite linear;
     }
 
+    /* PreLoader */
+    /* Animations and Transitions */
     @keyframes spin {
       from{transform: rotate(0deg);}
       to{transform: rotate(360deg);}
     }
+
+    .slide-enter-active {
+      z-index: 1;
+      transition: all 0.3s ease-out;
+    }
+
+    .slide-leave-active {
+      z-index: 1;
+      transition: all 0.3s ease-out;
+    }
+
+    .slide-enter-from,
+    .slide-leave-to {
+      z-index: 1;
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    /* Animations and Transitions */
+    /* Main Widget */
 
   }
 

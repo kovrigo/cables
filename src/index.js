@@ -1,7 +1,18 @@
 var options = {
     "full_mode": "true", // Переключение между полным (горизонтальным) вариантом виджета и упрощенным (вертикальным)
     "widget_easymode_size": "400px", // Определяет высоту и ширину блока выподающих списков и блока конструктора (только в упрощенном варианте)
+    "widget_easymode_bg_color": "#eaeaea", // Определяет цвет фона виджета в упрощенном (вертикальном) варианте [example: #eaeaea \ gray]
+    
+    "widget_ui_main_color": "#019F8C", // Цвет всех акцентирующих элементов и :hover позиций
+    "widget_ui_second_color": "#F7F7F7", // Цвет элементов в обычной позиции
+
+    "widget_border_size": "1px",
+    "widget_border_type": "solid",
+    "widget_border_color": "#000000", // [example: #eaeaea \ gray]
+    "widget_border_radius": "10px",
+    
     "thumbnail_url": "https://i.ucrazy.ru/files/pics/2016.12/uporotkotii16.jpg", // Ссылка на картинку кабеля для левой панели табунации
+
     "references": [
         {
             "id": "Номинальное сечение жилы",
