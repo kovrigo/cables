@@ -33,7 +33,7 @@
       <img id="thumbOpen" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbOpen">
       
       <!-- 3D canvas goes here -->
-      <button class="btn-minimize-maximize" v-if="isFullMode != true" @click="uiAllowShow = !uiAllowShow;">
+      <button class="btn-minimize-maximize" v-if="isFullMode != true" @click.prevent="uiAllowShow = !uiAllowShow;">
         <svg v-if="uiAllowShow" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm5.354.854a.502.502 0 0 1-.708-.708l2-2a.502.502 0 0 1 .708 0l2 2a.502.502 0 0 1-.708.708L8 7.207 6.354 8.854Z"/>
         </svg>
