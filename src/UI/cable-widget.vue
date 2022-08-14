@@ -33,7 +33,7 @@
       <img id="thumbOpen" class="thumbnailOpen" :src=thumbUrl v-if="isThumbnailOpen" @click="thumbOpen">
       
       <!-- 3D canvas goes here -->
-      <button class="btn-minimize-maximize" v-if="isFullMode != true" @click.prevent="uiAllowShow = !uiAllowShow;">
+      <button class="btn-minimize-maximize" :class="{btnToggle: uiAllowShow === true}" v-if="isFullMode != true" @click.prevent="uiAllowShow = !uiAllowShow;">
         <svg v-if="uiAllowShow" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm5.354.854a.502.502 0 0 1-.708-.708l2-2a.502.502 0 0 1 .708 0l2 2a.502.502 0 0 1-.708.708L8 7.207 6.354 8.854Z"/>
         </svg>
@@ -134,18 +134,24 @@ export default {
     var self = this;
   
     // Initialize Full\Easy Mode 
-    if (this.options.full_mode === "true") {this.isFullMode = true; this.uiAllowShow = true}
-    else {this.isFullMode = false;}
+    if (_.has(this.options, "full_mode")) {
+      if (this.options.full_mode === true || this.options.full_mode === "true") {this.isFullMode = true; this.uiAllowShow = true}
+      else {this.isFullMode = false;}
+    }
+    else {
+      this.isFullMode = this.isFullMode;
+      this.uiAllowShow = true
+    }
 
     // Create and initialize cable viewer
     window.cableViewer = new CableViewer(500, function (progress) {self.isLoaderVisible = true;});
     this.$refs["viewer"].appendChild(window.cableViewer.canvas);
-
+    
     // Make Active Thumbs from Json
     if (this.isFullMode === true) {
       this.isImgLoaderVisible = true;
       this.thumbUrl = this.loaderLogo;
-      if (this.options.thumbnail_url === '') {
+      if (_.has(this.options, "thumbnail_url") === false || this.options.thumbnail_url === '' || this.options.thumbnail_url === 'null' || this.options.thumbnail_url === null) {
         this.activeThumb = 2;
         this.isThumbnailOpen = false;
       }
@@ -157,18 +163,23 @@ export default {
     else {this.isThumbnailOpen = false;}
     
     // Resize Widget in Easy Mode from Json
-    document.body.style.setProperty('--widget_easymode_size', this.options.widget_easymode_size)
+    if (_.has(this.options, "widget_easymode_size")) {document.body.style.setProperty('--widget_easymode_size', this.options.widget_easymode_size)}
+    if (_.has(this.options, "ui_easymode_height")) {document.body.style.setProperty('--ui_easymode_height', this.options.ui_easymode_height)}
     // Set Widget Background Color in Easy Mode from Json
-    document.body.style.setProperty('--widget_easymode_bg_color', this.options.widget_easymode_bg_color)
+    if (_.has(this.options, "widget_easymode_bg_color")) {document.body.style.setProperty('--widget_easymode_bg_color', this.options.widget_easymode_bg_color)}
     // Set Widget UI Colors from Json
-    document.body.style.setProperty('--widget-ui-main-color', this.options.widget_ui_main_color)
-    document.body.style.setProperty('--widget-ui-second-color', this.options.widget_ui_second_color)
+    if (_.has(this.options, "widget_ui_main_color")) {document.body.style.setProperty('--widget-ui-main-color', this.options.widget_ui_main_color)}
+    if (_.has(this.options, "widget_ui_second_color")) {document.body.style.setProperty('--widget-ui-second-color', this.options.widget_ui_second_color)}
     // Set Widget Border Settings from Json
-    document.body.style.setProperty('--widget-border-size', this.options.widget_border_size)
-    document.body.style.setProperty('--widget-border-type', this.options.widget_border_type)
-    document.body.style.setProperty('--widget-border-color', this.options.widget_border_color)
-    document.body.style.setProperty('--widget-border-radius', this.options.widget_border_radius)
-
+    if (_.has(this.options, "widget_border_size")) {document.body.style.setProperty('--widget-border-size', this.options.widget_border_size)}
+    if (_.has(this.options, "widget_border_type")) {document.body.style.setProperty('--widget-border-type', this.options.widget_border_type)}
+    if (_.has(this.options, "widget_border_color")) {document.body.style.setProperty('--widget-border-color', this.options.widget_border_color)}
+    if (_.has(this.options, "widget_border_radius")) {document.body.style.setProperty('--widget-border-radius', this.options.widget_border_radius)}
+    // Set Thumbnail Border Settings from Json
+    if (_.has(this.options, "thumbnail_border_radius")) {document.body.style.setProperty('--ui_thumbnail_border_radius', this.options.thumbnail_border_radius)}
+    // Set Selects Font Size from Json
+    if (_.has(this.options, "ui_select_span_font_size")) {document.body.style.setProperty('--ui-select-span-f-size', this.options.ui_select_span_font_size)}
+    
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
     this.selects = _.map(sortedReferences, function (reference) {
@@ -250,7 +261,7 @@ export default {
        
         // Apply Image Thumbnail URL from Json
         if (this.isFullMode === true) {
-          if (this.options.thumbnail_url === '') {
+          if (_.has(this.options, "thumbnail_url") === false || this.options.thumbnail_url === '' || this.options.thumbnail_url === 'null' || this.options.thumbnail_url === null) {
             // Do this only once
             if (this.isFirstRun === true) {
               this.thumbUrl = window.cableViewer.canvas.toDataURL();
@@ -297,9 +308,13 @@ export default {
   $ui-sec-color: var(--widget-ui-second-color);
   $widget-easymode-bg-color: var(--widget_easymode_bg_color);
   $widget-easymode-size: var(--widget_easymode_size);
+  $ui-easymode-height: var(--ui_easymode_height);
+  $ui-thumbnail-border-radius: var(--ui_thumbnail_border_radius);
   
   :root{
-    --widget_easymode_size: 500px;
+    --widget_easymode_size: 400px;
+    --ui_easymode_height: 400px;
+
     --widget_easymode_bg_color: #eaeaea;
     --widget-ui-main-color: #019F8C;
     --widget-ui-second-color: #F7F7F7;
@@ -307,9 +322,10 @@ export default {
     --widget-border-size: 1px;
     --widget-border-type: solid;
     --widget-border-color: #000000;
-    --widget-border-radius: 10px;
+    --widget-border-radius: 0px;
 
-    --ui-select-span-f-size: small;
+    --ui-select-span-f-size: middle;
+    --ui_thumbnail_border_radius: 0px;
   }
 
   body {
@@ -345,7 +361,7 @@ export default {
 
     .uiEasyMode {
       width: 100% !important;
-      height: $widget-easymode-size !important;
+      height: $ui-easymode-height !important;
     }
 
     .viewerEasyMode {
@@ -399,26 +415,22 @@ export default {
       fill: #fff;
     }
 
-    .btn-minimize-maximize:focus svg,
-    .btn-minimize-maximize:focus-visible svg
-     {
-      fill: #fff;
-    }
-
     .btn-minimize-maximize:hover {
       background-color: $ui-main-color;
       color: white;
       cursor: pointer;
     }
-
-    .btn-minimize-maximize:focus, 
-    .btn-minimize-maximize:focus-visible {
-      border: none;
-      background-color: $ui-main-color;
-      color: white;
+    
+    .btnToggle {
+      background-color: $ui-main-color !important;
+      color: white !important;
       cursor: pointer;
-      outline: none;
     }
+
+    .btnToggle svg {
+      fill: #fff !important;
+    }
+
     /* Minimize\Maximize UI Button */
     /* Thumbnails Tabs */
     
@@ -432,6 +444,7 @@ export default {
     }
 
     .thumbnail {
+      border-radius: $ui-thumbnail-border-radius;
       display: flex;
       position: relative;
       margin: 5px 5px 5px 5px;
@@ -442,6 +455,7 @@ export default {
       justify-content: center;
       align-items: center;
       cursor: pointer;
+      overflow: hidden;
     }
 
     .activeThumbnail {
