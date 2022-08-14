@@ -171,14 +171,22 @@ export default {
     if (_.has(this.options, "widget_ui_main_color")) {document.body.style.setProperty('--widget-ui-main-color', this.options.widget_ui_main_color)}
     if (_.has(this.options, "widget_ui_second_color")) {document.body.style.setProperty('--widget-ui-second-color', this.options.widget_ui_second_color)}
     // Set Widget Border Settings from Json
-    if (_.has(this.options, "widget_border_size")) {document.body.style.setProperty('--widget-border-size', this.options.widget_border_size)}
-    if (_.has(this.options, "widget_border_type")) {document.body.style.setProperty('--widget-border-type', this.options.widget_border_type)}
-    if (_.has(this.options, "widget_border_color")) {document.body.style.setProperty('--widget-border-color', this.options.widget_border_color)}
+    if (_.has(this.options, "widget_border_enable") || _.has(this.options, "widget_border")) {
+      if (this.options.widget_border_enable === true || this.options.widget_border_enable === "true") {document.body.style.setProperty('--widget-border', this.options.widget_border)} 
+      else {document.body.style.setProperty('--widget-border', "none")}
+    }
+    // Set Widget Border Radius from Json
     if (_.has(this.options, "widget_border_radius")) {document.body.style.setProperty('--widget-border-radius', this.options.widget_border_radius)}
-    // Set Thumbnail Border Settings from Json
+    // Set Thumbnail Border Radius from Json
     if (_.has(this.options, "thumbnail_border_radius")) {document.body.style.setProperty('--ui_thumbnail_border_radius', this.options.thumbnail_border_radius)}
     // Set Selects Font Size from Json
     if (_.has(this.options, "ui_select_span_font_size")) {document.body.style.setProperty('--ui-select-span-f-size', this.options.ui_select_span_font_size)}
+    // Set Widget Shadow from Json
+    if (_.has(this.options, "widget_shadow_enable") || _.has(this.options, "widget_shadow")) {
+      if (this.options.widget_shadow_enable === true || this.options.widget_shadow_enable === "true") {document.body.style.setProperty('--widget-shadow', this.options.widget_shadow)} 
+      else {document.body.style.setProperty('--widget-shadow', "none")}
+    }
+
     
     // Generate selects with values
     var sortedReferences = _.sortBy(this.options.references, ['index']);
@@ -319,10 +327,9 @@ export default {
     --widget-ui-main-color: #019F8C;
     --widget-ui-second-color: #F7F7F7;
 
-    --widget-border-size: 1px;
-    --widget-border-type: solid;
-    --widget-border-color: #000000;
+    --widget-border: 1px solid black;
     --widget-border-radius: 0px;
+    --widget-shadow: none;
 
     --ui-select-span-f-size: middle;
     --ui_thumbnail_border_radius: 0px;
@@ -383,8 +390,9 @@ export default {
     right: 10px;
     width: 1000px;
     height: auto;
-    border: var(--widget-border-size) var(--widget-border-type) var(--widget-border-color);
+    border: var(--widget-border);
     border-radius: var(--widget-border-radius);
+    box-shadow: var(--widget-shadow);
     z-index: 1;
     overflow: hidden;
 

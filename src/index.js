@@ -9,12 +9,14 @@ var options = {
 
     "ui_select_span_font_size": "middle", // Устанавливает размер шрифта селектов small | middle | big
 
-    "widget_border_size": "1px", // Ширина обводки виджета
-    "widget_border_type": "solid", 
-    "widget_border_color": "#000000", // [example: #eaeaea \ gray]
+    "widget_border_enable": true, // Включает или выключает обводку виджета
+    "widget_border": "1px solid black", // Настройки обводки виджета [Size Type Color]
+    "widget_shadow_enable": false, // Включает или выключает тень виджета
+    "widget_shadow": "8px 8px 15px gray", // Настройки тени виджета (Если widget_shadow_enable === true) [Right Bottom Blur Color]
+    
     "widget_border_radius": "10px", // Скругляет края виджета
     "thumbnail_border_radius": "10px", // Скругляет края карточек изображений в левой части полного режима виджета
-    
+
     "thumbnail_url": "https://i.ucrazy.ru/files/pics/2016.12/uporotkotii16.jpg", // Ссылка на картинку кабеля для левой панели табунации, чтобы отключить передачу картинки - '', "null", null
 
     "references": [
